@@ -25,7 +25,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Absolutely hide scrollbars but retain swift viewport kinetic scroll capabilities */
+        /* Fully responsive hidden scrollbar rule configuration */
         ::-webkit-scrollbar {
             display: none !important;
             width: 0px !important;
@@ -35,6 +35,7 @@
         * {
             -ms-overflow-style: none !important;
             scrollbar-width: none !important;
+            box-sizing: border-box;
         }
 
         .glass-panel {
@@ -59,15 +60,21 @@
         @keyframes spin {
             100% { transform: rotate(360deg); }
         }
+
+        /* Fixed viewport setup mapping standard and dynamic viewport heights */
+        .app-viewport {
+            height: 100vh;
+            height: 100dvh;
+        }
     </style>
 </head>
-<body class="h-full w-full flex flex-col justify-between items-center text-slate-800 antialiased overflow-hidden">
+<body class="app-viewport w-full flex flex-col justify-between items-center text-slate-800 antialiased overflow-hidden">
 
     <div id="gateway-view" class="hidden w-full max-w-md h-full flex flex-col justify-center px-6 py-8 relative z-50 overflow-y-auto">
         
         <!-- STEP 1: Main Gateway Install Prompt -->
         <div id="gateway-install-card" class="glass-panel rounded-[32px] p-8 text-center premium-shadow-heavy flex flex-col items-center gap-6 transition-all duration-500 ease-out">
-            <div class="w-24 h-24 rounded-3xl bg-white flex items-center justify-center p-2 shadow-inner">
+            <div class="w-24 h-24 rounded-3xl bg-white fill-current flex items-center justify-center p-2 shadow-inner">
                 <img src="icon.svg" alt="App Icon" class="w-full h-full rounded-2xl object-cover" onerror="this.src='https://placehold.co/128x128/ffffff/4f46e5?text=Demo'">
             </div>
             <div>
@@ -113,7 +120,7 @@
     </div>
 
 
-    <div id="dashboard-view" class="hidden w-full h-full flex flex-col justify-between relative z-40">
+    <div id="dashboard-view" class="hidden w-full h-full flex flex-col justify-between relative z-40 max-w-md mx-auto">
         
         <!-- TOP DECORATIVE STATUS CONTAINER -->
         <header class="w-full px-6 pt-12 pb-4 flex justify-between items-center bg-transparent shrink-0">
@@ -131,8 +138,8 @@
             </div>
         </header>
 
-        <!-- MAIN SCROLLABLE APP PANELS VIEWPORT -->
-        <main class="flex-1 w-full overflow-y-auto px-6 pb-28">
+        <!-- MAIN SCROLLABLE APP PANELS VIEWPORT (Adjusted pb-32 to protect floating menu bounds) -->
+        <main class="flex-1 w-full overflow-y-auto px-6 pb-32">
 
             <!-- TAB 1: SMART CALCULATOR MODULE -->
             <section id="panel-calculator" class="w-full flex flex-col gap-6 py-2 transition-all duration-300">
@@ -145,31 +152,31 @@
                         <div id="calc-display" class="text-slate-900 text-3xl font-extrabold select-all tracking-tight font-mono truncate">0</div>
                     </div>
 
-                    <!-- Calculator Buttons Panel Grid -->
-                    <div class="grid grid-cols-4 gap-3">
-                        <button onclick="calcClear()" class="h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-bold text-lg transition duration-150">C</button>
-                        <button onclick="calcChar('(')" class="h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">(</button>
-                        <button onclick="calcChar(')')" class="h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">)</button>
-                        <button onclick="calcChar('/')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">÷</button>
+                    <!-- Calculator Buttons Panel Grid (Mobile Scaled Heights) -->
+                    <div class="grid grid-cols-4 gap-2.5">
+                        <button onclick="calcClear()" class="h-12 sm:h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-bold text-lg transition duration-150">C</button>
+                        <button onclick="calcChar('(')" class="h-12 sm:h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">(</button>
+                        <button onclick="calcChar(')')" class="h-12 sm:h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">)</button>
+                        <button onclick="calcChar('/')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">÷</button>
 
-                        <button onclick="calcChar('7')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">7</button>
-                        <button onclick="calcChar('8')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">8</button>
-                        <button onclick="calcChar('9')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">9</button>
-                        <button onclick="calcChar('*')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-lg transition duration-150">×</button>
+                        <button onclick="calcChar('7')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">7</button>
+                        <button onclick="calcChar('8')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">8</button>
+                        <button onclick="calcChar('9')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">9</button>
+                        <button onclick="calcChar('*')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-lg transition duration-150">×</button>
 
-                        <button onclick="calcChar('4')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">4</button>
-                        <button onclick="calcChar('5')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">5</button>
-                        <button onclick="calcChar('6')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">6</button>
-                        <button onclick="calcChar('-')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">−</button>
+                        <button onclick="calcChar('4')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">4</button>
+                        <button onclick="calcChar('5')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">5</button>
+                        <button onclick="calcChar('6')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">6</button>
+                        <button onclick="calcChar('-')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">−</button>
 
-                        <button onclick="calcChar('1')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">1</button>
-                        <button onclick="calcChar('2')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">2</button>
-                        <button onclick="calcChar('3')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">3</button>
-                        <button onclick="calcChar('+')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">+</button>
+                        <button onclick="calcChar('1')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">1</button>
+                        <button onclick="calcChar('2')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">2</button>
+                        <button onclick="calcChar('3')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">3</button>
+                        <button onclick="calcChar('+')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">+</button>
 
-                        <button onclick="calcChar('0')" class="col-span-2 h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150 text-left pl-7">0</button>
-                        <button onclick="calcChar('.')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">.</button>
-                        <button onclick="calcCompute()" class="h-14 rounded-xl bg-rose-600 active:bg-rose-700 text-white font-bold text-xl transition duration-150 shadow-md shadow-rose-600/10">=</button>
+                        <button onclick="calcChar('0')" class="col-span-2 h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150 text-left pl-7">0</button>
+                        <button onclick="calcChar('.')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">.</button>
+                        <button onclick="calcCompute()" class="h-12 sm:h-14 rounded-xl bg-rose-600 active:bg-rose-700 text-white font-bold text-xl transition duration-150 shadow-md shadow-rose-600/10">=</button>
                     </div>
                 </div>
 
@@ -297,7 +304,7 @@
                 <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm border border-indigo-100/30">
                     <i class="fas fa-handshake text-indigo-500 text-lg"></i>
                 </div>
-                <span class="text-[9px] font-extrabold tracking-wider uppercase text-indigo-600 transition duration-300">Partner</span>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-indigo-400 transition duration-300">Partner</span>
             </button>
 
             <!-- Tab 3: Alerts (High Contrast Floating Target) -->
@@ -305,12 +312,13 @@
                 <div class="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm">
                     <i class="fas fa-bell text-white text-lg"></i>
                 </div>
-                <span class="text-[9px] font-extrabold tracking-wider uppercase text-slate-800 transition duration-300">Alerts</span>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-slate-400 transition duration-300">Alerts</span>
             </button>
         </nav>
 
     </div>
 
+    <!-- TOAST MESSAGING POP-UPS CONTROLLER -->
     <div id="toast-container" class="fixed top-8 left-1/2 -translate-x-1/2 w-[90%] max-w-sm flex flex-col gap-2 z-[9999] pointer-events-none">
         <!-- Toast elements dynamically append here -->
     </div>
@@ -326,7 +334,20 @@
             setupInstallListeners();
             initHistoryList();
             setActiveNavVisual();
+            registerServiceWorker();
         };
+
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js')
+                .then(reg => {
+                    console.log('Service Worker registered successfully:', reg.scope);
+                })
+                .catch(err => {
+                    console.warn('Service Worker registration failed:', err);
+                });
+            }
+        }
 
         function checkInstallationRequirements() {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -511,7 +532,7 @@
                 card.className = "flex justify-between items-center bg-white/70 p-3 rounded-xl border border-slate-200/40 shadow-sm transition duration-150 active:bg-slate-100 cursor-pointer";
                 card.setAttribute('onclick', `calcLoadItem(${item.id}, event)`);
                 card.innerHTML = `
-                    <div class="flex-1 min-w-0 pr-2">
+                    <div class="flex-1 min-w-0 pr-2 text-left">
                         <p class="text-xs font-bold text-slate-900 truncate">${escapeHTML(item.label)}</p>
                         <p class="text-[10px] text-slate-400 truncate font-mono">${escapeHTML(item.expression)}</p>
                     </div>
@@ -556,7 +577,7 @@
 
         function dispatchAlertTest() {
             if (!("Notification" in window)) {
-                showToast("System notifications are not supported on this device/browser.");
+                showToast("System notifications are not supported on this device/browser. Fallback alert triggered! 🚀");
                 return;
             }
 
@@ -567,26 +588,32 @@
                     if (permission === "granted") {
                         triggerSystemNotification();
                     } else {
-                        showToast("Permissions Denied. Fallback: App operates at peak metrics! 🚀");
+                        showToast("Push permission denied. In-app fallback metrics are fully operational! 🚀");
                     }
                 });
             } else {
-                showToast("Permissions Denied/Blocked. Fallback: App operates at peak metrics! 🚀");
+                showToast("Notification permission blocked. In-app fallback metrics are fully operational! 🚀");
             }
         }
 
         function triggerSystemNotification() {
-            const title = "Demo App";
+            const title = "Demo App Notification";
             const options = {
                 body: "This is your customized push alert. The system operates at peak benchmark metrics! 🚀",
                 icon: "icon.svg",
                 badge: "icon.svg"
             };
 
-            // Attempt ServiceWorker registration notification push or fallback directly to window API
-            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            // Attempt ServiceWorker registration notification push -- Required for modern iOS Standalone PWA push notifications
+            if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.ready.then(reg => {
-                    reg.showNotification(title, options);
+                    reg.showNotification(title, options)
+                    .catch(err => {
+                        console.warn("SW showNotification failed, triggering standard Window push: ", err);
+                        new Notification(title, options);
+                    });
+                }).catch(err => {
+                    new Notification(title, options);
                 });
             } else {
                 new Notification(title, options);
@@ -600,7 +627,7 @@
             toast.innerHTML = `
                 <div class="flex items-center gap-2">
                     <i class="fas fa-info-circle text-slate-800 text-base"></i>
-                    <span>${escapeHTML(message)}</span>
+                    <span class="text-left select-text">${escapeHTML(message)}</span>
                 </div>
                 <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 transition">
                     <i class="fas fa-xmark text-sm"></i>
@@ -627,9 +654,6 @@
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
         }
-
-        // Initialize PWA State Check
-        checkInstallationRequirements();
     </script>
 </body>
 </html>
