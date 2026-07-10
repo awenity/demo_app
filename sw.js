@@ -1,4 +1,4 @@
-const CACHE_NAME = 'demo-app-v2';
+const CACHE_NAME = 'demo-app-v3';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -33,3 +33,52 @@ self.addEventListener('fetch', (e) => {
     })
   );
 });
+
+self.addEventListener('push', (event) => {
+  let data = { title: 'Demo App Update', body: 'New information received!' };
+  try {
+    if (event.data) {
+      data = event.data.json();
+    }
+  } catch (err) {
+    if (event.data) {
+      data = { title: 'Demo App Update', body: event.data.text() };
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: './icon.svg',
+    badge: './icon.svg',
+    vibrate: [100, 50, 100],
+    data: {
+      url: data.url || './index.html'
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  const targetUrl = event.notification.data?.url || './index.html';
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes(targetUrl) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
+});
+``` eof
+
+```html:Premium Viewport:index.html
