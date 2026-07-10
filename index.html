@@ -1,749 +1,635 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full w-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Demo App</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts for Ultra-Premium Sans-Serif Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e293b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.svg">
+
     <style>
-        /* Disable text selection, pull-to-refresh, and apply premium font */
-        html, body {
+        body {
+            background: radial-gradient(circle at 10% 20%, rgba(243, 244, 246, 1) 0%, rgba(238, 242, 246, 1) 45%, rgba(245, 243, 255, 1) 90%);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at 10% 20%, rgba(243, 241, 249, 1) 0%, rgba(247, 247, 250, 1) 90%);
-            color: #1e293b;
-            overscroll-behavior-y: none; /* Disables pull to refresh */
-            user-select: none; /* Disables text selection */
+            overscroll-behavior-y: none;
+            user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow-x: hidden;
         }
 
-        /* Completely hide scrollbars but preserve scrolling capacity */
+        /* Absolutely hide scrollbars but retain swift viewport kinetic scroll capabilities */
         ::-webkit-scrollbar {
             display: none !important;
+            width: 0px !important;
+            height: 0px !important;
         }
+        
         * {
-            scrollbar-width: none !important;
             -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
         }
 
-        /* White Premium Glassmorphism & Soft Shadows */
-        .premium-glass {
+        .glass-panel {
             background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(24px) saturate(190%);
-            -webkit-backdrop-filter: blur(24px) saturate(190%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 20px 40px -15px rgba(109, 40, 217, 0.05);
         }
 
         .premium-shadow-heavy {
-            box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 24px 60px -15px rgba(15, 23, 42, 0.12), 0 8px 16px -8px rgba(15, 23, 42, 0.04);
         }
 
-        .text-glow-premium {
-            text-shadow: 0 2px 10px rgba(139, 92, 246, 0.15);
+        .premium-shadow-light {
+            box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.05);
         }
 
-        /* Smooth tab transition views */
-        .tab-content {
-            display: none;
-            opacity: 0;
-            transform: translateY(12px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
+        .animated-spin-custom {
+            animation: spin 3s linear infinite;
         }
 
-        .tab-content.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative pb-32">
+<body class="h-full w-full flex flex-col justify-between items-center text-slate-800 antialiased overflow-hidden">
 
-<script>
-    // Premium Minimal SVG Logo Design for manifest
-    const svgLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
-        <defs>
-            <linearGradient id="premium-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#4f46e5" />
-                <stop offset="100%" stop-color="#ec4899" />
-            </linearGradient>
-        </defs>
-        <rect width="100" height="100" rx="30" fill="#ffffff"/>
-        <circle cx="50" cy="50" r="32" fill="none" stroke="url(#premium-grad)" stroke-width="8"/>
-        <path d="M42 38 L62 50 L42 62 Z" fill="url(#premium-grad)"/>
-    </svg>`;
-
-    // Inject manifest with Base64 icon
-    const manifest = {
-        "name": "Demo App",
-        "short_name": "Demo App",
-        "start_url": ".",
-        "display": "standalone",
-        "background_color": "#ffffff",
-        "theme_color": "#4f46e5",
-        "icons": [
-            {
-                "src": "data:image/svg+xml;base64," + btoa(svgLogo),
-                "sizes": "512x512",
-                "type": "image/svg+xml",
-                "purpose": "any maskable"
-            }
-        ]
-    };
-
-    const manifestStr = JSON.stringify(manifest);
-    const blob = new Blob([manifestStr], {type: 'application/json'});
-    const manifestURL = URL.createObjectURL(blob);
-    
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = manifestURL;
-    document.head.appendChild(link);
-
-    // Register Service Worker from dynamic inline javascript
-    if ('serviceWorker' in navigator) {
-        const swContent = `
-            const CACHE_NAME = 'demo-app-v1';
-            const ASSETS = [
-                '/',
-                '/index.html'
-            ];
-
-            self.addEventListener('install', (e) => {
-                e.waitUntil(
-                    caches.open(CACHE_NAME).then((cache) => {
-                        return cache.addAll(ASSETS);
-                    }).then(() => self.skipWaiting())
-                );
-            });
-
-            self.addEventListener('activate', (e) => {
-                e.waitUntil(
-                    caches.keys().then((keys) => {
-                        return Promise.all(
-                            keys.map((key) => {
-                                if (key !== CACHE_NAME) {
-                                    return caches.delete(key);
-                                }
-                            })
-                        );
-                    }).then(() => self.clients.claim())
-                );
-            });
-
-            self.addEventListener('fetch', (e) => {
-                e.respondWith(
-                    caches.match(e.request).then((cachedResponse) => {
-                        return cachedResponse || fetch(e.request);
-                    })
-                );
-            });
-        `;
-
-        const swBlob = new Blob([swContent], {type: 'application/javascript'});
-        const swURL = URL.createObjectURL(swBlob);
-
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register(swURL).catch((err) => {
-                // If blob service worker fails due to origin rules, fallback to generic /sw.js
-                navigator.serviceWorker.register('./sw.js').catch((e) => {
-                    console.log('PWA Service Worker registered inside container bounds.');
-                });
-            });
-        });
-    }
-</script>
-
-<main class="flex-grow flex flex-col justify-center items-center w-full max-w-5xl mx-auto px-6 py-8">
-
-    <!-- SCREEN 1: Mandatory Gateway Install Screen (No continue bypass) -->
-    <section id="screen-install" class="w-full max-w-md premium-glass p-10 rounded-[32px] flex flex-col items-center text-center py-14 relative overflow-hidden transition-all duration-300 transform scale-100">
-        <!-- Premium Abstract Glow Orbs -->
-        <div class="absolute -top-24 -left-24 w-52 h-52 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-24 -right-24 w-52 h-52 bg-pink-200/40 rounded-full blur-3xl pointer-events-none"></div>
-
-        <!-- Premium SVG Logo Container -->
-        <div class="w-24 h-24 mb-8 relative">
-            <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-[28px] blur-xl opacity-70"></div>
-            <div class="relative bg-white/90 p-4 rounded-[28px] border border-white flex items-center justify-center shadow-lg shadow-indigo-500/5">
-                <svg class="w-16 h-16" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="32" fill="none" stroke="url(#grad2)" stroke-width="8"/>
-                    <path d="M42 38 L62 50 L42 62 Z" fill="url(#grad2)"/>
-                    <defs>
-                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#4f46e5" />
-                            <stop offset="100%" stop-color="#db2777" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-        </div>
-
-        <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-3">
-            Demo App
-        </h1>
-        <p class="text-slate-500 text-sm mb-10 px-4 leading-relaxed font-medium">
-            Experience our premium suite of smart utilities. Add it to your home screen for quick, offline-ready desktop performance.
-        </p>
-
-        <!-- Premium High-Fidelity Call-To-Action Button -->
-        <button id="pwa-install-btn" onclick="handleInstallAction()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform active:scale-95 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-3 group relative overflow-hidden">
-            <i class="fa-solid fa-arrow-down-to-line text-lg"></i>
-            <span>Install Demo App</span>
-        </button>
-
-        <div class="mt-8 flex items-center gap-2 text-xs text-indigo-600 font-semibold uppercase tracking-wider">
-            <i class="fa-solid fa-shield-check text-sm"></i> Secure App Installation Gateway
-        </div>
-    </section>
-
-    <!-- SCREEN 2: Transition / Success / Instruction Hub Screen -->
-    <section id="screen-success" class="hidden w-full max-w-md premium-glass p-10 rounded-[32px] flex flex-col items-center text-center py-14 relative overflow-hidden transition-all duration-300 transform scale-100">
-        <div class="absolute -top-24 -left-24 w-52 h-52 bg-emerald-200/30 rounded-full blur-3xl pointer-events-none"></div>
-
-        <!-- Premium Checkmark Icon Animation -->
-        <div class="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mb-8">
-            <i class="fa-solid fa-sparkles text-3xl text-emerald-600"></i>
-        </div>
-
-        <h2 class="text-2xl font-extrabold text-slate-800 mb-3">Check your Home Screen!</h2>
-        <p class="text-slate-600 text-sm mb-8 leading-relaxed font-medium px-2">
-            The App should install in a few seconds. Look for the <span class="text-indigo-600 font-bold">Demo App</span> icon directly on your home launcher or desktop drawer.
-        </p>
-
-        <!-- Elegant system spinner -->
-        <div class="flex items-center gap-3 bg-white/60 backdrop-blur-md px-5 py-3.5 rounded-2xl border border-white/80 mb-8 w-full justify-center shadow-sm">
-            <div class="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <span class="text-xs text-slate-500 font-semibold tracking-wide">Configuring resources...</span>
-        </div>
-
-        <!-- Premium User Manual Accordion -->
-        <div class="text-left w-full bg-white/40 border border-white/60 p-5 rounded-2xl space-y-3">
-            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Manual Launch Options</p>
-            <div class="flex items-start gap-3 text-xs text-slate-600 font-medium">
-                <span class="bg-slate-100 text-slate-700 rounded-lg px-1.5 py-0.5 font-bold text-[10px]">iOS</span>
-                <p class="leading-relaxed">Tap share button <i class="fa-solid fa-arrow-up-from-bracket mx-0.5 text-indigo-500"></i> then choose <strong>"Add to Home Screen"</strong>.</p>
-            </div>
-            <div class="flex items-start gap-3 text-xs text-slate-600 font-medium">
-                <span class="bg-slate-100 text-slate-700 rounded-lg px-1.5 py-0.5 font-bold text-[10px]">Desktop</span>
-                <p class="leading-relaxed">Accept the prompt in the browser's address bar to finish download.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SCREEN 3: Standalone PWA Dashboard (Hidden until installed or navigated via the gateway) -->
-    <section id="screen-actual-app" class="hidden w-full max-w-4xl flex flex-col gap-8 animate-[fadeIn_0.5s_ease-out]">
+    <div id="gateway-view" class="hidden w-full max-w-md h-full flex flex-col justify-center px-6 py-8 relative z-50 overflow-y-auto">
         
-        <!-- App Top Header Section -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/50 backdrop-blur-md p-6 rounded-[28px] border border-white/80 shadow-sm">
-            <div class="flex items-center gap-4">
-                <div class="bg-gradient-to-tr from-indigo-500 to-pink-500 p-2.5 rounded-2xl shadow-md shadow-indigo-500/10">
-                    <svg class="w-8 h-8" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="32" fill="none" stroke="#ffffff" stroke-width="8"/>
-                        <path d="M42 38 L62 50 L42 62 Z" fill="#ffffff"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Demo App</h1>
-                        <span class="bg-emerald-500/10 text-emerald-600 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-wider flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Standalone
-                        </span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-medium">Crafted by <span class="text-indigo-600 font-semibold">Awenity Builds</span></p>
-                </div>
+        <!-- STEP 1: Main Gateway Install Prompt -->
+        <div id="gateway-install-card" class="glass-panel rounded-[32px] p-8 text-center premium-shadow-heavy flex flex-col items-center gap-6 transition-all duration-500 ease-out">
+            <div class="w-24 h-24 rounded-3xl bg-white flex items-center justify-center p-2 shadow-inner">
+                <img src="icon.svg" alt="App Icon" class="w-full h-full rounded-2xl object-cover" onerror="this.src='https://placehold.co/128x128/ffffff/4f46e5?text=Demo'">
             </div>
-            <!-- Elegant calendar widget -->
-            <div class="flex items-center gap-3 text-xs text-slate-600 bg-white/75 px-4 py-2.5 rounded-xl border border-white shadow-sm font-semibold self-start sm:self-auto">
-                <i class="fa-solid fa-calendar-star text-indigo-500"></i>
-                <span id="current-date-span">July 11, 2026</span>
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Demo App</h1>
+                <p class="text-slate-500 mt-2 text-sm">Experience modern standalone performance, instant capabilities, and push-alert delivery.</p>
+            </div>
+            
+            <div class="w-full border-t border-slate-200/50 my-2"></div>
+
+            <div class="w-full flex flex-col gap-3">
+                <button id="btn-install-pwa" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 px-6 rounded-2xl transition duration-300 transform active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-slate-900/10">
+                    <i class="fas fa-arrow-down-to-line"></i>
+                    <span>Install Demo App</span>
+                </button>
+                <p class="text-xs text-slate-400">Install to proceed. This layout does not support execution in standard browser frames.</p>
             </div>
         </div>
 
-        <!-- TAB VIEWS CONTAINER -->
-        <div class="relative w-full min-h-[460px]">
-            
-            <!-- SUB-TAB 1: CALCULATOR -->
-            <div id="tab-calculator" class="tab-content active space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                    
-                    <!-- Calculator Panel -->
-                    <div class="md:col-span-7 premium-glass p-6 rounded-[28px]">
-                        <div class="flex items-center gap-3 mb-6">
-                            <span class="bg-rose-500/10 text-rose-600 p-2.5 rounded-xl border border-rose-500/10">
-                                <i class="fa-solid fa-calculator text-lg"></i>
-                            </span>
-                            <div>
-                                <h3 class="text-base font-bold text-slate-800">Smart Calculator</h3>
-                                <p class="text-xs text-slate-400 font-medium">Perform calculations and save variables</p>
-                            </div>
-                        </div>
-
-                        <!-- Main Screen/Board -->
-                        <div class="bg-slate-900 text-white p-5 rounded-2xl mb-4 shadow-inner relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                            <div class="text-right px-1">
-                                <div id="calc-expr" class="text-xs text-slate-400 h-5 overflow-hidden tracking-wider font-mono"></div>
-                                <div id="calc-display" class="text-3xl font-bold h-10 overflow-hidden font-mono tracking-tight mt-1">0</div>
-                            </div>
-
-                            <!-- Save context input integration -->
-                            <div class="flex gap-2 pt-4 mt-4 border-t border-slate-800/80">
-                                <input type="text" id="calc-save-name" placeholder="Label name (e.g. Total)" class="bg-slate-800/70 text-white placeholder-slate-500 px-3.5 py-2 rounded-xl text-xs w-full focus:outline-none focus:ring-1 focus:ring-rose-500 font-medium border border-transparent">
-                                <button onclick="saveCalculation()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 shadow-lg shadow-rose-600/10">
-                                    <i class="fa-solid fa-bookmark mr-1.5"></i> Save
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Premium Grid Panel Layout -->
-                        <div class="grid grid-cols-4 gap-2.5">
-                            <button onclick="clearCalc()" class="bg-slate-100 hover:bg-slate-200/70 text-rose-600 font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">C</button>
-                            <button onclick="inputCalc('(')" class="bg-slate-100 hover:bg-slate-200/70 text-slate-700 font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">(</button>
-                            <button onclick="inputCalc(')')" class="bg-slate-100 hover:bg-slate-200/70 text-slate-700 font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">)</button>
-                            <button onclick="inputCalc('/')" class="bg-indigo-50 hover:bg-indigo-100/70 text-indigo-600 font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">/</button>
-
-                            <button onclick="inputCalc('7')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">7</button>
-                            <button onclick="inputCalc('8')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">8</button>
-                            <button onclick="inputCalc('9')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">9</button>
-                            <button onclick="inputCalc('*')" class="bg-indigo-50 hover:bg-indigo-100/70 text-indigo-600 font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">×</button>
-
-                            <button onclick="inputCalc('4')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">4</button>
-                            <button onclick="inputCalc('5')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">5</button>
-                            <button onclick="inputCalc('6')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">6</button>
-                            <button onclick="inputCalc('-')" class="bg-indigo-50 hover:bg-indigo-100/70 text-indigo-600 font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">-</button>
-
-                            <button onclick="inputCalc('1')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">1</button>
-                            <button onclick="inputCalc('2')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">2</button>
-                            <button onclick="inputCalc('3')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">3</button>
-                            <button onclick="inputCalc('+')" class="bg-indigo-50 hover:bg-indigo-100/70 text-indigo-600 font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">+</button>
-
-                            <button onclick="inputCalc('0')" class="col-span-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">0</button>
-                            <button onclick="inputCalc('.')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold p-3.5 rounded-xl transition-all active:scale-95 text-sm">.</button>
-                            <button onclick="evalCalc()" class="bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-extrabold p-3.5 rounded-xl transition-all active:scale-95 text-sm">=</button>
-                        </div>
-                    </div>
-
-                    <!-- Calculation Archive Storage -->
-                    <div class="md:col-span-5 bg-white/60 backdrop-blur-md p-6 rounded-[28px] border border-white/80 shadow-sm flex flex-col justify-between min-h-[390px]">
-                        <div>
-                            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-                                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Saved Computations</span>
-                                <button onclick="clearSavedCalcs()" class="text-[11px] text-rose-500 hover:text-rose-600 font-bold transition-all"><i class="fa-regular fa-trash-can mr-1"></i> Clear All</button>
-                            </div>
-                            <div id="saved-calcs-container" class="max-h-[260px] overflow-y-auto space-y-2.5 pr-1">
-                                <!-- Dynamic records go here -->
-                                <p class="text-xs text-slate-400 italic text-center py-10 font-medium">No computations archived yet.</p>
-                            </div>
-                        </div>
-                    </div>
-
+        <!-- STEP 2: Onboarding Progress and Success Instructions -->
+        <div id="gateway-onboarding-card" class="hidden glass-panel rounded-[32px] p-8 text-center premium-shadow-heavy flex flex-col items-center gap-6 transition-all duration-500 ease-out">
+            <div class="relative w-20 h-20">
+                <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent animated-spin-custom"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="fas fa-cloud-arrow-down text-indigo-600 text-xl"></i>
                 </div>
             </div>
 
-            <!-- SUB-TAB 2: BRANDING & CONTACT (PARTNER) -->
-            <div id="tab-branding" class="tab-content space-y-6">
-                <div class="premium-glass p-8 rounded-[32px] relative overflow-hidden">
-                    <div class="absolute -top-32 -right-32 w-64 h-64 bg-indigo-200/30 rounded-full blur-3xl pointer-events-none"></div>
-                    <div class="absolute -bottom-32 -left-32 w-64 h-64 bg-pink-200/30 rounded-full blur-3xl pointer-events-none"></div>
-
-                    <div class="max-w-2xl mx-auto text-center">
-                        <span class="bg-indigo-50 text-indigo-600 text-[10px] font-extrabold px-3.5 py-1.5 rounded-full border border-indigo-100 uppercase tracking-widest">
-                            Get One For Yourself
-                        </span>
-                        <h2 class="text-3xl font-extrabold text-slate-800 mt-5 tracking-tight">Professional Web & PWA Solutions</h2>
-                        <p class="text-slate-500 text-sm mt-3 mb-8 leading-relaxed max-w-lg mx-auto font-medium">
-                            Looking to scale your presence with fully offline-capable, responsive platforms designed flawlessly across all device layouts? Let's turn your idea into code.
-                        </p>
-
-                        <!-- Dynamic Action Buttons Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 max-w-lg mx-auto">
-                            <!-- WhatsApp -->
-                            <a href="https://wa.me/923001311047?text=Hi!%20I%20saw%20your%20Demo%20App%20and%20would%20like%20to%20discuss%20building%20an%20application." target="_blank" class="bg-[#25D366]/10 hover:bg-[#25D366] text-[#128C7E] hover:text-white border border-[#25D366]/20 hover:border-transparent py-4 px-5 rounded-2xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md active:scale-95">
-                                <i class="fa-brands fa-whatsapp text-lg"></i>
-                                <span>Talk Now</span>
-                            </a>
-                            <!-- Instagram -->
-                            <a href="https://www.instagram.com/awenity_builds" target="_blank" class="bg-pink-500/10 hover:bg-gradient-to-tr hover:from-pink-500 hover:to-indigo-500 text-pink-600 hover:text-white border border-pink-500/20 hover:border-transparent py-4 px-5 rounded-2xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md active:scale-95">
-                                <i class="fa-brands fa-instagram text-lg"></i>
-                                <span>Instagram</span>
-                            </a>
-                            <!-- Portfolio -->
-                            <a href="https://awenity.github.io/intro" target="_blank" class="bg-slate-900 hover:bg-slate-800 text-white py-4 px-5 rounded-2xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md active:scale-95">
-                                <i class="fa-solid fa-compass text-lg"></i>
-                                <span>Explore Portfolio</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900">Setting Up App</h2>
+                <p class="text-indigo-600 font-medium text-sm mt-1">Check your home screen in a few seconds.</p>
             </div>
 
-            <!-- SUB-TAB 3: ALERTS / NOTIFICATIONS -->
-            <div id="tab-alerts" class="tab-content space-y-6">
-                <div class="max-w-md mx-auto premium-glass p-8 rounded-[32px] text-center relative overflow-hidden">
-                    <div class="absolute -top-16 -left-16 w-36 h-36 bg-indigo-500/5 rounded-full blur-2xl"></div>
+            <div class="w-full bg-slate-50/60 rounded-2xl p-5 border border-slate-200/40 text-left">
+                <h3 id="platform-title" class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2 mb-3">
+                    <i class="fab fa-apple text-slate-900"></i> Manual Sharing Guide
+                </h3>
+                <div id="platform-instructions" class="text-slate-600 text-xs leading-relaxed space-y-2">
+                    <!-- Dynamic platform instructions filled via JavaScript controller -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/5">
-                        <i class="fa-solid fa-bell text-xl animate-bounce"></i>
-                    </div>
 
-                    <h3 class="text-xl font-extrabold text-slate-800 mb-2">Notification System</h3>
-                    <p class="text-slate-500 text-xs font-medium mb-8 leading-relaxed px-2">
-                        Trigger a prompt to push system notifications directly to this hardware. If blocked or offline, we fallback to our custom visual alert banner instantly.
+    <div id="dashboard-view" class="hidden w-full h-full flex flex-col justify-between relative z-40">
+        
+        <!-- TOP DECORATIVE STATUS CONTAINER -->
+        <header class="w-full px-6 pt-12 pb-4 flex justify-between items-center bg-transparent shrink-0">
+            <div class="flex items-center gap-3">
+                <img src="icon.svg" alt="Icon" class="w-10 h-10 rounded-xl shadow-md bg-white">
+                <div>
+                    <h2 class="font-extrabold text-lg text-slate-900">Demo App</h2>
+                    <p class="text-[10px] text-emerald-500 font-semibold tracking-wider uppercase flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> PWA Operational Mode
                     </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs bg-indigo-50 border border-indigo-100 text-indigo-600 font-bold px-3 py-1.5 rounded-full shadow-sm">v2.0 Standalone</span>
+            </div>
+        </header>
 
-                    <button onclick="triggerAppNotification()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-2xl border border-transparent hover:border-slate-800 transition-all duration-300 flex items-center justify-center gap-2.5 shadow-lg active:scale-95">
-                        <i class="fa-regular fa-bell"></i>
+        <!-- MAIN SCROLLABLE APP PANELS VIEWPORT -->
+        <main class="flex-1 w-full overflow-y-auto px-6 pb-28">
+
+            <!-- TAB 1: SMART CALCULATOR MODULE -->
+            <section id="panel-calculator" class="w-full flex flex-col gap-6 py-2 transition-all duration-300">
+                
+                <!-- GLASS CALCULATOR BOARD -->
+                <div class="glass-panel rounded-[28px] p-5 premium-shadow-heavy flex flex-col gap-4">
+                    <!-- Calculator Display Screens -->
+                    <div class="bg-slate-900/5 rounded-2xl p-5 text-right flex flex-col gap-1 min-h-[96px] justify-end relative overflow-hidden border border-slate-200/30">
+                        <div id="calc-exp" class="text-slate-400 text-xs tracking-wider min-h-[16px] break-all select-all font-mono"></div>
+                        <div id="calc-display" class="text-slate-900 text-3xl font-extrabold select-all tracking-tight font-mono truncate">0</div>
+                    </div>
+
+                    <!-- Calculator Buttons Panel Grid -->
+                    <div class="grid grid-cols-4 gap-3">
+                        <button onclick="calcClear()" class="h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-bold text-lg transition duration-150">C</button>
+                        <button onclick="calcChar('(')" class="h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">(</button>
+                        <button onclick="calcChar(')')" class="h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">)</button>
+                        <button onclick="calcChar('/')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">÷</button>
+
+                        <button onclick="calcChar('7')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">7</button>
+                        <button onclick="calcChar('8')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">8</button>
+                        <button onclick="calcChar('9')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">9</button>
+                        <button onclick="calcChar('*')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-lg transition duration-150">×</button>
+
+                        <button onclick="calcChar('4')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">4</button>
+                        <button onclick="calcChar('5')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">5</button>
+                        <button onclick="calcChar('6')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">6</button>
+                        <button onclick="calcChar('-')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">−</button>
+
+                        <button onclick="calcChar('1')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">1</button>
+                        <button onclick="calcChar('2')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">2</button>
+                        <button onclick="calcChar('3')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">3</button>
+                        <button onclick="calcChar('+')" class="h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">+</button>
+
+                        <button onclick="calcChar('0')" class="col-span-2 h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150 text-left pl-7">0</button>
+                        <button onclick="calcChar('.')" class="h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">.</button>
+                        <button onclick="calcCompute()" class="h-14 rounded-xl bg-rose-600 active:bg-rose-700 text-white font-bold text-xl transition duration-150 shadow-md shadow-rose-600/10">=</button>
+                    </div>
+                </div>
+
+                <!-- PERSISTENT CALCULATION ARCHIVE PANEL -->
+                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col gap-4">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fas fa-bookmark text-rose-500"></i> Archive Calculation
+                    </h3>
+                    <div class="flex gap-2">
+                        <input id="save-calc-label" type="text" placeholder="e.g., Grocery Bill, Fuel" class="flex-1 px-4 py-3 bg-white border border-slate-200/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 placeholder:text-slate-400 font-medium">
+                        <button onclick="calcSave()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold px-5 py-3 rounded-xl text-sm transition duration-150 flex items-center justify-center gap-2 shadow-md shadow-rose-600/10">
+                            <i class="fas fa-plus"></i> Save
+                        </button>
+                    </div>
+
+                    <div class="border-t border-slate-200/50 my-1"></div>
+
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Archived Computations</h4>
+                        <button onclick="calcClearHistory()" class="text-rose-600 text-xs font-semibold hover:underline active:opacity-75">Clear All</button>
+                    </div>
+
+                    <!-- Computations List Container -->
+                    <div id="calc-history-list" class="flex flex-col gap-2 max-h-[180px] overflow-y-auto pr-1">
+                        <!-- Dynamic calculations items outputted here -->
+                        <div class="text-center py-4 text-slate-400 text-xs italic">No computations archived yet.</div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- TAB 2: PARTNER INTEGRATIONS PORTAL -->
+            <section id="panel-partner" class="hidden w-full flex flex-col gap-6 py-2 transition-all duration-300">
+                
+                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col gap-6">
+                    <div class="w-full h-36 rounded-2xl overflow-hidden relative shadow-inner">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-slate-900 to-indigo-900 opacity-90"></div>
+                        <div class="absolute inset-0 flex flex-col justify-end p-5">
+                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-indigo-400 bg-indigo-900/40 px-2 py-1 rounded-md w-max border border-indigo-700/50 mb-1.5">Build Offer</span>
+                            <h3 class="text-lg font-bold text-white tracking-tight leading-snug">Premium Custom PWAs For Your Business</h3>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Experience stellar retention and incredible accessibility. Standardize high-performance web engineering, hardware native push notifications, offline capability architectures, and premium modern glassmorphic application screens built specifically for your digital product.
+                        </p>
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
+                                <i class="fas fa-bolt text-indigo-500"></i>
+                                <span class="font-medium text-slate-700">Sub-second Load</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
+                                <i class="fas fa-circle-check text-indigo-500"></i>
+                                <span class="font-medium text-slate-700">100% Offline Ops</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
+                                <i class="fas fa-bell text-indigo-500"></i>
+                                <span class="font-medium text-slate-700">Hardware Push</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
+                                <i class="fas fa-palette text-indigo-500"></i>
+                                <span class="font-medium text-slate-700">Premium UI/UX</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-200/50 my-1"></div>
+
+                    <!-- CALL TO ACTION TARGET BUTTONS -->
+                    <div class="flex flex-col gap-3">
+                        <a href="https://wa.me/923001311047?text=Hi!%20I%20saw%20your%20Demo%20App..." target="_blank" rel="noopener" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-xl transition duration-150 text-center flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10">
+                            <i class="fab fa-whatsapp text-emerald-400 text-lg"></i> Talk Now
+                        </a>
+                        <div class="grid grid-cols-2 gap-3">
+                            <a href="https://www.instagram.com/awenity_builds" target="_blank" rel="noopener" class="bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 text-indigo-600 font-bold py-3 px-4 rounded-xl transition duration-150 text-center text-xs flex items-center justify-center gap-2">
+                                <i class="fab fa-instagram text-base"></i> Instagram
+                            </a>
+                            <a href="https://awenity.github.io/intro" target="_blank" rel="noopener" class="bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 text-indigo-600 font-bold py-3 px-4 rounded-xl transition duration-150 text-center text-xs flex items-center justify-center gap-2">
+                                <i class="fas fa-globe text-base"></i> Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- TAB 3: NOTIFICATION ENGINE & ALERTS -->
+            <section id="panel-alerts" class="hidden w-full flex flex-col gap-6 py-2 transition-all duration-300">
+                
+                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col items-center text-center gap-6">
+                    <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center shadow-inner text-slate-800">
+                        <i class="fas fa-bell text-3xl animate-bounce"></i>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-extrabold text-slate-900">Notification Hub</h3>
+                        <p class="text-sm text-slate-500 mt-2 max-w-xs mx-auto">Verify your client environment capability. Dispatch native notifications to the hardware, or try an in-app fallback.</p>
+                    </div>
+
+                    <div class="w-full border-t border-slate-200/50 my-1"></div>
+
+                    <button onclick="dispatchAlertTest()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-xl transition duration-150 flex items-center justify-center gap-3 shadow-lg shadow-slate-900/10">
+                        <i class="fas fa-paper-plane"></i>
                         <span>Dispatch Test Notification</span>
                     </button>
                 </div>
-            </div>
 
-        </div>
+            </section>
 
-    </section>
+        </main>
 
-</main>
-
-<!-- FLOATING DYNAMIC ALERTS PORTAL -->
-<div id="toast-layer" class="fixed bottom-32 right-6 left-6 sm:left-auto flex flex-col gap-3.5 z-[110] pointer-events-none max-w-sm w-full mx-auto sm:mx-0"></div>
-
-<!-- PREMIUM FLOATING NAVIGATION BAR (Replicating style in image_86ad02.png) -->
-<nav id="app-bottom-navbar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white/90 backdrop-blur-xl rounded-[28px] py-4 px-6 border border-white/60 premium-shadow-heavy flex justify-around items-center z-[100] gap-2">
-    <!-- Tab 1: Calculator (Pink accent like Expense icon) -->
-    <button onclick="switchTab('calculator', this)" class="nav-tab-btn flex flex-col items-center justify-center gap-1 active group">
-        <div class="w-12 h-12 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center transition-all duration-300 group-hover:scale-105">
-            <i class="fa-solid fa-calculator text-rose-500 text-lg"></i>
-        </div>
-        <span class="text-[10px] font-extrabold text-slate-400 group-hover:text-slate-700 transition-colors">Calculator</span>
-    </button>
-
-    <!-- Tab 2: Partner / Explore (Purple accent like Split icon) -->
-    <button onclick="switchTab('branding', this)" class="nav-tab-btn flex flex-col items-center justify-center gap-1 group">
-        <div class="w-12 h-12 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center transition-all duration-300 group-hover:scale-105">
-            <i class="fa-solid fa-handshake text-indigo-500 text-lg"></i>
-        </div>
-        <span class="text-[10px] font-extrabold text-slate-400 group-hover:text-slate-700 transition-colors">Partner</span>
-    </button>
-
-    <!-- Tab 3: Alerts (Dark background option like 'More' circular button) -->
-    <button onclick="switchTab('alerts', this)" class="nav-tab-btn flex flex-col items-center justify-center gap-1 group">
-        <div class="w-12 h-12 rounded-full bg-slate-900 border border-slate-900 flex items-center justify-center shadow-md shadow-slate-900/10 transition-all duration-300 group-hover:scale-105">
-            <i class="fa-solid fa-bell text-white text-base"></i>
-        </div>
-        <span class="text-[10px] font-extrabold text-slate-400 group-hover:text-slate-700 transition-colors">Alerts</span>
-    </button>
-</nav>
-
-<!-- App Footer -->
-<footer class="w-full text-center py-6 text-slate-400 text-xs mt-12 mb-20 pointer-events-none">
-    <p>© 2026 Demo App. Premium PWA Experience powered by <a href="https://awenity.github.io/intro" target="_blank" class="text-indigo-500 font-bold hover:underline pointer-events-auto">Awenity Builds</a>.</p>
-</footer>
-
-<script>
-    // System core state storage
-    let currentCalculation = '0';
-    let savedCalculations = JSON.parse(localStorage.getItem('savedCalculations') || '[]');
-    let deferredPrompt = null;
-
-    // Run on startup
-    window.onload = function() {
-        // Render systems date
-        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date-span').textContent = new Date().toLocaleDateString('en-US', dateOptions);
-
-        // Load historical arithmetic
-        renderSavedCalculations();
-
-        // Listen for standard native PWA installation event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
-        // Smart Standalone launch flow check (Strict block - no manual override bypass button)
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-            setAppView('app');
-        } else {
-            setAppView('install');
-        }
-    };
-
-    // Screen State Controller
-    function setAppView(viewName) {
-        document.getElementById('screen-install').classList.add('hidden');
-        document.getElementById('screen-success').classList.add('hidden');
-        document.getElementById('screen-actual-app').classList.add('hidden');
-        document.getElementById('app-bottom-navbar').classList.add('hidden');
-
-        if (viewName === 'install') {
-            document.getElementById('screen-install').classList.remove('hidden');
-        } else if (viewName === 'success') {
-            document.getElementById('screen-success').classList.remove('hidden');
-        } else if (viewName === 'app') {
-            document.getElementById('screen-actual-app').classList.remove('hidden');
-            document.getElementById('app-bottom-navbar').classList.remove('hidden');
-            switchTab('calculator', document.querySelector('.nav-tab-btn'));
-        }
-    }
-
-    // Tab Interface Switcher ( Bottom Nav controller )
-    function switchTab(tabId, element) {
-        // Deactivate all sections
-        const tabs = ['calculator', 'branding', 'alerts'];
-        tabs.forEach(id => {
-            document.getElementById('tab-' + id).classList.remove('active');
-        });
-
-        // Set target tab active
-        document.getElementById('tab-' + tabId).classList.add('active');
-
-        // Reset visual status indicator class in navbar buttons
-        document.querySelectorAll('.nav-tab-btn').forEach(btn => {
-            btn.querySelector('span').className = "text-[10px] font-extrabold text-slate-400 group-hover:text-slate-700 transition-colors";
-        });
-
-        // Style selected element labels
-        if (element) {
-            element.querySelector('span').className = "text-[10px] font-extrabold text-slate-800 transition-colors";
-        }
-    }
-
-    // Install Sequence Trigger
-    function handleInstallAction() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                deferredPrompt = null;
-            });
-        }
-        
-        // Immediate transition to the Success/Onboarding stage
-        setAppView('success');
-        showToast("Triggered download sequence on your OS", "info");
-    }
-
-    // System Notification Action Engine
-    function triggerAppNotification() {
-        if (!("Notification" in window)) {
-            triggerVirtualNotification("System Notification", "Web notifications are currently blocked or unsupported in this frame. Here is a custom in-app warning banner!");
-            return;
-        }
-
-        if (Notification.permission === "granted") {
-            sendRealNotification();
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    sendRealNotification();
-                } else {
-                    triggerVirtualNotification("System Blocked", "System permissions were denied. Defaulting to integrated visual banner sequence.");
-                }
-            });
-        } else {
-            triggerVirtualNotification("Permission Denied", "Native notifications are disabled in browser settings. Please enable them.");
-        }
-    }
-
-    function sendRealNotification() {
-        try {
-            const logoURL = "data:image/svg+xml;base64," + btoa(svgLogo);
-            new Notification("Demo App Service", {
-                body: "This is your customized push alert. The system operates at peak benchmark metrics! 🚀",
-                icon: logoURL
-            });
-            showToast("System alert dispatched successfully", "success");
-        } catch (e) {
-            triggerVirtualNotification("System Alert Dispatched", "The system operates at peak benchmark metrics! 🚀");
-        }
-    }
-
-    // Custom Glassmorphic In-App Alert (Fallback)
-    function triggerVirtualNotification(title, text) {
-        const toastLayer = document.getElementById('toast-layer');
-        const container = document.createElement('div');
-        container.className = "pointer-events-auto bg-white/95 border border-slate-200/60 rounded-3xl p-5 shadow-2xl flex items-start gap-4 transform transition-all duration-300 translate-y-4 opacity-0 premium-shadow-heavy";
-        
-        container.innerHTML = `
-            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-2xl text-indigo-600 flex-shrink-0">
-                <i class="fa-solid fa-bell-ring text-base animate-pulse"></i>
-            </div>
-            <div class="flex-grow">
-                <h4 class="text-xs font-extrabold text-slate-800 tracking-tight">${title}</h4>
-                <p class="text-[11px] text-slate-500 mt-1 leading-relaxed font-semibold">${text}</p>
-            </div>
-            <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-800 transition-colors">
-                <i class="fa-solid fa-xmark text-sm"></i>
+        <!-- FLOATING BOTTOM NAVIGATION BAR CAPSULE -->
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md h-[84px] glass-panel rounded-full px-4 flex items-center justify-between premium-shadow-heavy z-50">
+            <!-- Tab 1: Calculator -->
+            <button onclick="switchTab('calculator', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
+                <div class="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm border border-rose-100/30">
+                    <i class="fas fa-calculator text-rose-500 text-lg"></i>
+                </div>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-rose-600 transition duration-300">Calculator</span>
             </button>
-        `;
 
-        toastLayer.appendChild(container);
-        setTimeout(() => {
-            container.classList.remove('translate-y-4', 'opacity-0');
-        }, 10);
+            <!-- Tab 2: Partner -->
+            <button onclick="switchTab('partner', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
+                <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm border border-indigo-100/30">
+                    <i class="fas fa-handshake text-indigo-500 text-lg"></i>
+                </div>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-indigo-600 transition duration-300">Partner</span>
+            </button>
 
-        setTimeout(() => {
-            if (container.parentElement) {
-                container.classList.add('opacity-0', 'translate-y-[-10px]');
-                setTimeout(() => container.remove(), 300);
-            }
-        }, 7500);
-    }
+            <!-- Tab 3: Alerts (High Contrast Floating Target) -->
+            <button onclick="switchTab('alerts', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
+                <div class="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm">
+                    <i class="fas fa-bell text-white text-lg"></i>
+                </div>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-slate-800 transition duration-300">Alerts</span>
+            </button>
+        </nav>
 
-    // Dynamic Top UI feedback Toasts
-    function showToast(message, type = "success") {
-        const toastLayer = document.getElementById('toast-layer');
-        const container = document.createElement('div');
-        container.className = "pointer-events-auto px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-bold transform transition-all duration-300 translate-y-4 opacity-0 border " + 
-            (type === 'success' ? 'bg-emerald-50 border-emerald-100 text-emerald-600 shadow-emerald-500/5' : 'bg-indigo-50 border-indigo-100 text-indigo-600 shadow-indigo-500/5');
-        
-        const icon = type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-info"></i>';
-        container.innerHTML = `${icon} <span>${message}</span>`;
-        toastLayer.appendChild(container);
+    </div>
 
-        setTimeout(() => {
-            container.classList.remove('translate-y-4', 'opacity-0');
-        }, 10);
+    <div id="toast-container" class="fixed top-8 left-1/2 -translate-x-1/2 w-[90%] max-w-sm flex flex-col gap-2 z-[9999] pointer-events-none">
+        <!-- Toast elements dynamically append here -->
+    </div>
 
-        setTimeout(() => {
-            if (container.parentElement) {
-                container.classList.add('opacity-0');
-                setTimeout(() => container.remove(), 300);
-            }
-        }, 4000);
-    }
 
-    const calcDisplay = document.getElementById('calc-display');
-    const calcExpr = document.getElementById('calc-expr');
+    <!-- CONTROL SCRIPTS SECTION -->
+    <script>
+        let deferredPrompt = null;
+        let activeTab = 'calculator';
 
-    function inputCalc(char) {
-        if (currentCalculation === '0' && !isNaN(char)) {
-            currentCalculation = char;
-        } else {
-            currentCalculation += char;
-        }
-        updateCalcDisplay();
-    }
-
-    function clearCalc() {
-        currentCalculation = '0';
-        calcExpr.textContent = '';
-        updateCalcDisplay();
-    }
-
-    function updateCalcDisplay() {
-        calcDisplay.textContent = currentCalculation;
-    }
-
-    function evalCalc() {
-        try {
-            let sanitized = currentCalculation.replace(/×/g, '*');
-            let result = eval(sanitized);
-            
-            if (result === undefined || isNaN(result)) {
-                throw new Error("Invalid Format");
-            }
-            if (result % 1 !== 0) {
-                result = parseFloat(result.toFixed(6));
-            }
-            
-            calcExpr.textContent = currentCalculation + ' =';
-            currentCalculation = result.toString();
-            updateCalcDisplay();
-        } catch (e) {
-            calcDisplay.textContent = 'Error';
-            setTimeout(() => {
-                currentCalculation = '0';
-                updateCalcDisplay();
-            }, 1200);
-        }
-    }
-
-    function saveCalculation() {
-        const nameField = document.getElementById('calc-save-name');
-        const calcName = nameField.value.trim();
-        const value = calcDisplay.textContent;
-
-        if (!calcName) {
-            showToast("Please supply an identifier name", "info");
-            return;
-        }
-
-        if (value === 'Error' || value === '0') {
-            showToast("Cannot archive an empty output", "info");
-            return;
-        }
-
-        const calculationObject = {
-            id: Date.now(),
-            name: calcName,
-            expression: calcExpr.textContent || '',
-            value: value
+        window.onload = function() {
+            checkInstallationRequirements();
+            setupInstallListeners();
+            initHistoryList();
+            setActiveNavVisual();
         };
 
-        savedCalculations.unshift(calculationObject);
-        localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
-        
-        nameField.value = '';
-        renderSavedCalculations();
-        showToast("Computation recorded successfully", "success");
-    }
-
-    function renderSavedCalculations() {
-        const container = document.getElementById('saved-calcs-container');
-        if (savedCalculations.length === 0) {
-            container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10 font-semibold">No computations archived yet.</p>`;
-            return;
+        function checkInstallationRequirements() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            
+            if (isStandalone) {
+                document.getElementById('gateway-view').classList.add('hidden');
+                document.getElementById('dashboard-view').classList.remove('hidden');
+            } else {
+                document.getElementById('gateway-view').classList.remove('hidden');
+                document.getElementById('dashboard-view').classList.add('hidden');
+                detectPlatformManualGuide();
+            }
         }
 
-        container.innerHTML = savedCalculations.map(calc => `
-            <div class="bg-white/70 backdrop-blur-md p-3.5 rounded-2xl border border-slate-100 flex items-center justify-between gap-3 transition-all duration-200 hover:border-slate-200 shadow-sm">
-                <div class="overflow-hidden cursor-pointer flex-grow" onclick="loadCalculation('${calc.value}')">
-                    <div class="flex items-center gap-1.5 flex-wrap">
-                        <span class="text-xs font-bold text-slate-700 truncate max-w-[120px]">${calc.name}</span>
-                        <span class="text-[10px] text-slate-400 font-mono truncate">${calc.expression}</span>
+        function setupInstallListeners() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+            });
+
+            document.getElementById('btn-install-pwa').addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User installation decision: ${outcome}`);
+                    deferredPrompt = null;
+                }
+                
+                // Instantly transition to Success onboarding status screen to assist installation completion.
+                document.getElementById('gateway-install-card').classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    document.getElementById('gateway-install-card').classList.add('hidden');
+                    document.getElementById('gateway-onboarding-card').classList.remove('hidden');
+                    document.getElementById('gateway-onboarding-card').classList.add('opacity-100', 'scale-100');
+                }, 300);
+            });
+
+            window.addEventListener('appinstalled', () => {
+                showToast("Application Installed successfully! Launching standard dashboard...");
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            });
+        }
+
+        function detectPlatformManualGuide() {
+            const userAgent = window.navigator.userAgent || window.navigator.vendor || window.opera;
+            const platformTitle = document.getElementById('platform-title');
+            const platformInstructions = document.getElementById('platform-instructions');
+
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                platformTitle.innerHTML = `<i class="fab fa-apple text-slate-900 text-sm"></i> iOS Platform Instructions`;
+                platformInstructions.innerHTML = `
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">1.</strong> Tap the <strong>Share</strong> icon (<i class="fa-regular fa-square-share-nodes text-slate-800 text-sm"></i>) in Safari's bottom toolbar.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">2.</strong> Scroll down the options and select <strong>"Add to Home Screen"</strong>.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">3.</strong> Give the app a descriptive name and tap "Add" at the top-right corner to initiate standalone PWA view.</p>
+                `;
+            } else if (/Android/i.test(userAgent)) {
+                platformTitle.innerHTML = `<i class="fab fa-android text-emerald-600 text-sm"></i> Android Platform Suggestions`;
+                platformInstructions.innerHTML = `
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">1.</strong> Click the primary "Install Demo App" call-to-action button above.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">2.</strong> Alternatively, tap the browser's menu (three dots) on the top right.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">3.</strong> Select <strong>"Install App"</strong> or "Add to Home screen" to establish standalone launchers.</p>
+                `;
+            } else {
+                platformTitle.innerHTML = `<i class="fas fa-desktop text-slate-900 text-sm"></i> Desktop Standalone Instructions`;
+                platformInstructions.innerHTML = `
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">1.</strong> Click "Install Demo App" button above to pull current app launchers.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">2.</strong> Or locate the <strong>Install Icon</strong> (<i class="fas fa-arrow-down-to-line text-indigo-600"></i>) in the URL bar at the top-right.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">3.</strong> Approve the install dialog to deploy and access the application in premium viewport ratios.</p>
+                `;
+            }
+        }
+
+        function switchTab(tabId, element) {
+            activeTab = tabId;
+            
+            // Hide all subview panels
+            document.getElementById('panel-calculator').classList.add('hidden');
+            document.getElementById('panel-partner').classList.add('hidden');
+            document.getElementById('panel-alerts').classList.add('hidden');
+
+            // Show target panel
+            document.getElementById(`panel-${tabId}`).classList.remove('hidden');
+
+            // Apply active styles to bottom nav items
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => {
+                const label = tab.querySelector('span');
+                if (label) {
+                    label.classList.remove('text-slate-900', 'font-black', 'scale-105');
+                    label.classList.add('text-slate-400');
+                }
+            });
+
+            setActiveNavVisual();
+        }
+
+        function setActiveNavVisual() {
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                const span = tab.querySelector('span');
+                if (span && span.textContent.toLowerCase() === activeTab) {
+                    span.classList.add('text-slate-900', 'font-black', 'scale-105');
+                }
+            });
+        }
+
+
+        let currentExpr = '';
+
+        function calcChar(char) {
+            currentExpr += char;
+            updateCalcDisplay(currentExpr || '0');
+        }
+
+        function calcClear() {
+            currentExpr = '';
+            document.getElementById('calc-exp').innerText = '';
+            updateCalcDisplay('0');
+        }
+
+        function updateCalcDisplay(val) {
+            document.getElementById('calc-display').innerText = val;
+        }
+
+        function calcCompute() {
+            if (!currentExpr) return;
+            try {
+                // Sanitize calculations for standard basic algebra evaluation
+                const sanitized = currentExpr.replace(/[^0-9+\-*/().]/g, '');
+                const result = Function(`"use strict"; return (${sanitized})`)();
+                
+                document.getElementById('calc-exp').innerText = currentExpr;
+                currentExpr = String(result);
+                updateCalcDisplay(currentExpr);
+            } catch (err) {
+                updateCalcDisplay('Error');
+                currentExpr = '';
+            }
+        }
+
+        function calcSave() {
+            const labelInput = document.getElementById('save-calc-label');
+            const label = labelInput.value.trim() || 'Calculated Value';
+            const display = document.getElementById('calc-display').innerText;
+            const exp = document.getElementById('calc-exp').innerText || display;
+
+            if (display === 'Error' || display === '0') {
+                showToast("Cannot archive an empty or invalid mathematical expression.");
+                return;
+            }
+
+            const computation = {
+                id: Date.now(),
+                label: label,
+                expression: exp,
+                result: display
+            };
+
+            let history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
+            history.unshift(computation);
+            localStorage.setItem('demo_calc_history', JSON.stringify(history));
+
+            labelInput.value = '';
+            initHistoryList();
+            showToast("Calculation archived successfully.");
+        }
+
+        function initHistoryList() {
+            const container = document.getElementById('calc-history-list');
+            const history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
+
+            if (history.length === 0) {
+                container.innerHTML = `<div class="text-center py-4 text-slate-400 text-xs italic">No computations archived yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            history.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "flex justify-between items-center bg-white/70 p-3 rounded-xl border border-slate-200/40 shadow-sm transition duration-150 active:bg-slate-100 cursor-pointer";
+                card.setAttribute('onclick', `calcLoadItem(${item.id}, event)`);
+                card.innerHTML = `
+                    <div class="flex-1 min-w-0 pr-2">
+                        <p class="text-xs font-bold text-slate-900 truncate">${escapeHTML(item.label)}</p>
+                        <p class="text-[10px] text-slate-400 truncate font-mono">${escapeHTML(item.expression)}</p>
                     </div>
-                    <div class="text-sm font-extrabold font-mono text-indigo-600 mt-1">${calc.value}</div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-black text-rose-600 font-mono">${escapeHTML(item.result)}</span>
+                        <button onclick="calcDeleteItem(${item.id}, event)" class="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center hover:bg-rose-100/50 transition">
+                            <i class="fas fa-trash-can text-rose-500 text-[10px]"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function calcLoadItem(id, event) {
+            if (event.target.closest('button')) return; // Avoid loading when clicking delete
+            const history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
+            const item = history.find(x => x.id === id);
+            if (item) {
+                currentExpr = item.result;
+                document.getElementById('calc-exp').innerText = item.expression;
+                updateCalcDisplay(item.result);
+                showToast(`Loaded "${item.label}" back to screen.`);
+            }
+        }
+
+        function calcDeleteItem(id, event) {
+            event.stopPropagation();
+            let history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
+            history = history.filter(x => x.id !== id);
+            localStorage.setItem('demo_calc_history', JSON.stringify(history));
+            initHistoryList();
+            showToast("Calculation removed.");
+        }
+
+        function calcClearHistory() {
+            localStorage.removeItem('demo_calc_history');
+            initHistoryList();
+            showToast("History list cleared.");
+        }
+
+
+        function dispatchAlertTest() {
+            if (!("Notification" in window)) {
+                showToast("System notifications are not supported on this device/browser.");
+                return;
+            }
+
+            if (Notification.permission === "granted") {
+                triggerSystemNotification();
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        triggerSystemNotification();
+                    } else {
+                        showToast("Permissions Denied. Fallback: App operates at peak metrics! 🚀");
+                    }
+                });
+            } else {
+                showToast("Permissions Denied/Blocked. Fallback: App operates at peak metrics! 🚀");
+            }
+        }
+
+        function triggerSystemNotification() {
+            const title = "Demo App";
+            const options = {
+                body: "This is your customized push alert. The system operates at peak benchmark metrics! 🚀",
+                icon: "icon.svg",
+                badge: "icon.svg"
+            };
+
+            // Attempt ServiceWorker registration notification push or fallback directly to window API
+            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification(title, options);
+                });
+            } else {
+                new Notification(title, options);
+            }
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "glass-panel rounded-2xl p-4 flex items-center justify-between gap-3 text-sm font-semibold text-slate-800 shadow-xl pointer-events-auto transition duration-300 transform translate-y-4 opacity-0 border-l-4 border-l-slate-900";
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-info-circle text-slate-800 text-base"></i>
+                    <span>${escapeHTML(message)}</span>
                 </div>
-                <button onclick="deleteCalculation(${calc.id})" class="text-slate-400 hover:text-rose-500 p-1.5 transition-all">
-                    <i class="fa-solid fa-circle-xmark text-sm"></i>
+                <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 transition">
+                    <i class="fas fa-xmark text-sm"></i>
                 </button>
-            </div>
-        `).join('');
-    }
+            `;
+            container.appendChild(toast);
 
-    function loadCalculation(val) {
-        currentCalculation = val;
-        calcExpr.textContent = '';
-        updateCalcDisplay();
-        showToast("Restored value to screen buffer", "success");
-    }
+            // Animate In
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
 
-    function deleteCalculation(id) {
-        savedCalculations = savedCalculations.filter(item => item.id !== id);
-        localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
-        renderSavedCalculations();
-        showToast("Record removed", "info");
-    }
+            // Autoclose timer
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
 
-    function clearSavedCalcs() {
-        savedCalculations = [];
-        localStorage.removeItem('savedCalculations');
-        renderSavedCalculations();
-        showToast("Archive wiped successfully", "info");
-    }
-</script>
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
 
+        // Initialize PWA State Check
+        checkInstallationRequirements();
+    </script>
 </body>
 </html>

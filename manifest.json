@@ -1,0 +1,17 @@
+{
+"name": "Demo App",
+"short_name": "Demo App",
+"start_url": "./index.html",
+"display": "standalone",
+"orientation": "portrait",
+"background_color": "#f8fafc",
+"theme_color": "#1e293b",
+"icons": [
+{
+"src": "icon.svg",
+"sizes": "512x512",
+"type": "image/svg+xml",
+"purpose": "any maskable"
+}
+]
+}
