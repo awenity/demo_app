@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Demo App</title>
+    <title>Awenity Demo App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,7 +61,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Fixed viewport setup mapping standard and dynamic viewport heights */
         .app-viewport {
             height: 100vh;
             height: 100dvh;
@@ -75,11 +74,11 @@
         <!-- STEP 1: Main Gateway Install Prompt -->
         <div id="gateway-install-card" class="glass-panel rounded-[32px] p-8 text-center premium-shadow-heavy flex flex-col items-center gap-6 transition-all duration-500 ease-out">
             <div class="w-24 h-24 rounded-3xl bg-white fill-current flex items-center justify-center p-2 shadow-inner">
-                <img src="icon.svg" alt="App Icon" class="w-full h-full rounded-2xl object-cover" onerror="this.src='https://placehold.co/128x128/ffffff/4f46e5?text=Demo'">
+                <img src="icon.svg" alt="App Icon" class="w-full h-full rounded-2xl object-cover" onerror="this.src='https://placehold.co/128x128/ffffff/4f46e5?text=Awenity'">
             </div>
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Demo App</h1>
-                <p class="text-slate-500 mt-2 text-sm">Experience modern standalone performance, instant capabilities, and push-alert delivery.</p>
+                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Awenity</h1>
+                <p class="text-slate-500 mt-2 text-sm">Experience interactive standalone layouts, fluid digital micro-spaces, and customizable template configurations.</p>
             </div>
             
             <div class="w-full border-t border-slate-200/50 my-2"></div>
@@ -87,9 +86,9 @@
             <div class="w-full flex flex-col gap-3">
                 <button id="btn-install-pwa" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 px-6 rounded-2xl transition duration-300 transform active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-slate-900/10">
                     <i class="fas fa-arrow-down-to-line"></i>
-                    <span>Install Demo App</span>
+                    <span>Install Awenity Space</span>
                 </button>
-                <p class="text-xs text-slate-400">Install to proceed. This layout does not support execution in standard browser frames.</p>
+                <p class="text-xs text-slate-400">Install to proceed. This interactive showcase requires a standalone desktop or mobile view.</p>
             </div>
         </div>
 
@@ -119,170 +118,270 @@
         </div>
     </div>
 
-
     <div id="dashboard-view" class="hidden w-full h-full flex flex-col justify-between relative z-40 max-w-md mx-auto">
         
         <!-- TOP DECORATIVE STATUS CONTAINER -->
-        <header class="w-full px-6 pt-12 pb-4 flex justify-between items-center bg-transparent shrink-0">
+        <header class="w-full px-6 pt-10 pb-4 flex justify-between items-center bg-transparent shrink-0">
             <div class="flex items-center gap-3">
                 <img src="icon.svg" alt="Icon" class="w-10 h-10 rounded-xl shadow-md bg-white">
                 <div>
-                    <h2 class="font-extrabold text-lg text-slate-900">Demo App</h2>
-                    <p class="text-[10px] text-emerald-500 font-semibold tracking-wider uppercase flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> PWA Operational Mode
+                    <h2 class="font-extrabold text-lg text-slate-900">Awenity</h2>
+                    <p class="text-[10px] text-indigo-500 font-semibold tracking-wider uppercase flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> Micro Spaces Creator
                     </p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <span class="text-xs bg-indigo-50 border border-indigo-100 text-indigo-600 font-bold px-3 py-1.5 rounded-full shadow-sm">v1.0 Standalone</span>
+                <span class="text-[11px] bg-slate-900 text-white font-bold px-3 py-1.5 rounded-full shadow-sm">Digital App v3</span>
             </div>
         </header>
 
-        <!-- MAIN SCROLLABLE APP PANELS VIEWPORT (Adjusted pb-32 to protect floating menu bounds) -->
+        <!-- MAIN SCROLLABLE APP PANELS VIEWPORT -->
         <main class="flex-1 w-full overflow-y-auto px-6 pb-32">
 
-            <!-- TAB 1: SMART CALCULATOR MODULE -->
-            <section id="panel-calculator" class="w-full flex flex-col gap-6 py-2 transition-all duration-300">
+            <!-- TAB 1: THE OPENING ACT (HOME) -->
+            <section id="panel-home" class="w-full flex flex-col gap-6 py-2 transition-all duration-300">
                 
-                <!-- GLASS CALCULATOR BOARD -->
-                <div class="glass-panel rounded-[28px] p-5 premium-shadow-heavy flex flex-col gap-4">
-                    <!-- Calculator Display Screens -->
-                    <div class="bg-slate-900/5 rounded-2xl p-5 text-right flex flex-col gap-1 min-h-[96px] justify-end relative overflow-hidden border border-slate-200/30">
-                        <div id="calc-exp" class="text-slate-400 text-xs tracking-wider min-h-[16px] break-all select-all font-mono"></div>
-                        <div id="calc-display" class="text-slate-900 text-3xl font-extrabold select-all tracking-tight font-mono truncate">0</div>
-                    </div>
-
-                    <!-- Calculator Buttons Panel Grid (Mobile Scaled Heights) -->
-                    <div class="grid grid-cols-4 gap-2.5">
-                        <button onclick="calcClear()" class="h-12 sm:h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-bold text-lg transition duration-150">C</button>
-                        <button onclick="calcChar('(')" class="h-12 sm:h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">(</button>
-                        <button onclick="calcChar(')')" class="h-12 sm:h-14 rounded-xl bg-slate-100 active:bg-slate-200/80 text-slate-800 font-semibold text-lg transition duration-150">)</button>
-                        <button onclick="calcChar('/')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">÷</button>
-
-                        <button onclick="calcChar('7')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">7</button>
-                        <button onclick="calcChar('8')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">8</button>
-                        <button onclick="calcChar('9')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">9</button>
-                        <button onclick="calcChar('*')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-lg transition duration-150">×</button>
-
-                        <button onclick="calcChar('4')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">4</button>
-                        <button onclick="calcChar('5')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">5</button>
-                        <button onclick="calcChar('6')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">6</button>
-                        <button onclick="calcChar('-')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">−</button>
-
-                        <button onclick="calcChar('1')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">1</button>
-                        <button onclick="calcChar('2')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">2</button>
-                        <button onclick="calcChar('3')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">3</button>
-                        <button onclick="calcChar('+')" class="h-12 sm:h-14 rounded-xl bg-rose-50 active:bg-rose-100/80 text-rose-600 font-bold text-xl transition duration-150">+</button>
-
-                        <button onclick="calcChar('0')" class="col-span-2 h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150 text-left pl-7">0</button>
-                        <button onclick="calcChar('.')" class="h-12 sm:h-14 rounded-xl bg-white hover:bg-slate-50/50 active:bg-slate-100 text-slate-800 font-semibold text-lg premium-shadow-light transition duration-150">.</button>
-                        <button onclick="calcCompute()" class="h-12 sm:h-14 rounded-xl bg-rose-600 active:bg-rose-700 text-white font-bold text-xl transition duration-150 shadow-md shadow-rose-600/10">=</button>
-                    </div>
-                </div>
-
-                <!-- PERSISTENT CALCULATION ARCHIVE PANEL -->
+                <!-- HERO MOTIVATION COMPONENT -->
                 <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col gap-4">
-                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fas fa-bookmark text-rose-500"></i> Archive Calculation
+                    <div class="text-xs font-extrabold uppercase tracking-widest text-indigo-500">The Opening Act</div>
+                    
+                    <h1 class="text-2xl font-extrabold text-slate-900 leading-tight">
+                        Welcome to Your Own Digital Space.
+                    </h1>
+                    
+                    <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                        No limitations. Zero hosting fees. Fully customizable microsites designed to turn your audience into an asset you own.
+                    </p>
+
+                    <div class="border-t border-slate-200/50 my-2"></div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="flex items-start gap-3 bg-white/50 p-4 rounded-2xl border border-slate-100">
+                            <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
+                                <i class="fas fa-bolt text-rose-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Blazing Fast Speed</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Optimized load performance to maximize reader attention retention.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 bg-white/50 p-4 rounded-2xl border border-slate-100">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
+                                <i class="fas fa-dollar-sign text-indigo-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Zero Hosting Fees</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Host and preserve your static site deployment assets completely free forever.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 bg-white/50 p-4 rounded-2xl border border-slate-100">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                                <i class="fas fa-fingerprint text-emerald-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Fully Custom Solutions</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">No templated lookalikes. Handcrafted interfaces built around your identity.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK INTRO CTAS -->
+                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col gap-4">
+                    <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fas fa-compass text-indigo-500"></i> Explore Our Space
                     </h3>
-                    <div class="flex gap-2">
-                        <input id="save-calc-label" type="text" placeholder="e.g., Grocery Bill, Fuel" class="flex-1 px-4 py-3 bg-white border border-slate-200/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 placeholder:text-slate-400 font-medium">
-                        <button onclick="calcSave()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold px-5 py-3 rounded-xl text-sm transition duration-150 flex items-center justify-center gap-2 shadow-md shadow-rose-600/10">
-                            <i class="fas fa-plus"></i> Save
-                        </button>
-                    </div>
-
-                    <div class="border-t border-slate-200/50 my-1"></div>
-
-                    <div class="flex justify-between items-center">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Archived Computations</h4>
-                        <button onclick="calcClearHistory()" class="text-rose-600 text-xs font-semibold hover:underline active:opacity-75">Clear All</button>
-                    </div>
-
-                    <!-- Computations List Container -->
-                    <div id="calc-history-list" class="flex flex-col gap-2 max-h-[180px] overflow-y-auto pr-1">
-                        <!-- Dynamic calculations items outputted here -->
-                        <div class="text-center py-4 text-slate-400 text-xs italic">No computations archived yet.</div>
-                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        To see our engineering capabilities and learn how we create these premium viewports, discover our primary platform profile.
+                    </p>
+                    <a href="https://awenity.github.io/intro/" target="_blank" rel="noopener" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-5 rounded-xl text-center text-xs transition duration-150 flex items-center justify-center gap-2 shadow-md">
+                        <span>Open Awenity Intro</span>
+                        <i class="fas fa-external-link-alt text-[10px]"></i>
+                    </a>
                 </div>
 
             </section>
 
-            <!-- TAB 2: PARTNER INTEGRATIONS PORTAL -->
-            <section id="panel-partner" class="hidden w-full flex flex-col gap-6 py-2 transition-all duration-300">
+            <!-- TAB 2: TEMPLATE DIRECTORY -->
+            <section id="panel-templates" class="hidden w-full flex flex-col gap-6 py-2 transition-all duration-300">
                 
-                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col gap-6">
-                    <div class="w-full h-36 rounded-2xl overflow-hidden relative shadow-inner">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-slate-900 to-indigo-900 opacity-90"></div>
-                        <div class="absolute inset-0 flex flex-col justify-end p-5">
-                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-indigo-400 bg-indigo-900/40 px-2 py-1 rounded-md w-max border border-indigo-700/50 mb-1.5">Build Offer</span>
-                            <h3 class="text-lg font-bold text-white tracking-tight leading-snug">Premium Custom PWAs For Your Business</h3>
-                        </div>
-                    </div>
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-xl font-extrabold text-slate-900">Custom Templates</h2>
+                    <p class="text-xs text-slate-500">Tap any profile to view live layouts ready for customization.</p>
+                </div>
 
-                    <div class="space-y-4">
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            Experience stellar retention and incredible accessibility. Standardize high-performance web engineering, hardware native push notifications, offline capability architectures, and premium modern glassmorphic application screens built specifically for your digital product.
+                <div class="flex flex-col gap-4">
+
+                    <!-- TEMPLATE 1 -->
+                    <div class="glass-panel rounded-[24px] p-5 premium-shadow-heavy flex flex-col gap-3 border border-white">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 shadow-sm">
+                                    <i class="fas fa-photo-film text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-sm text-slate-900">Content Creator Multi Page</h3>
+                                    <p class="text-[11px] text-slate-400">Multi-tab creator ecosystem</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Organize multiple layout modules, display video content channels, and showcase secondary products across beautifully optimized tabs.
                         </p>
-                        <div class="grid grid-cols-2 gap-3 text-xs">
-                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
-                                <i class="fas fa-bolt text-indigo-500"></i>
-                                <span class="font-medium text-slate-700">Sub-second Load</span>
-                            </div>
-                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
-                                <i class="fas fa-circle-check text-indigo-500"></i>
-                                <span class="font-medium text-slate-700">100% Offline Ops</span>
-                            </div>
-                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
-                                <i class="fas fa-bell text-indigo-500"></i>
-                                <span class="font-medium text-slate-700">Hardware Push</span>
-                            </div>
-                            <div class="flex items-center gap-2 bg-slate-50/60 p-3 rounded-xl border border-slate-200/40">
-                                <i class="fas fa-palette text-indigo-500"></i>
-                                <span class="font-medium text-slate-700">Premium UI/UX</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-slate-200/50 my-1"></div>
-
-                    <!-- CALL TO ACTION TARGET BUTTONS -->
-                    <div class="flex flex-col gap-3">
-                        <a href="https://wa.me/923001311047?text=Hi!%20I%20saw%20your%20Demo%20App..." target="_blank" rel="noopener" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-xl transition duration-150 text-center flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10">
-                            <i class="fab fa-whatsapp text-emerald-400 text-lg"></i> Talk Now
+                        <a href="https://awenity.github.io/content_creator_template/" target="_blank" class="w-full bg-slate-100 hover:bg-slate-200/70 text-slate-800 font-bold py-2.5 px-4 rounded-xl text-center text-xs transition flex items-center justify-center gap-2">
+                            <span>Launch Live Template</span>
+                            <i class="fas fa-arrow-right text-[10px]"></i>
                         </a>
-                        <div class="grid grid-cols-2 gap-3">
-                            <a href="https://www.instagram.com/awenity_builds" target="_blank" rel="noopener" class="bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 text-indigo-600 font-bold py-3 px-4 rounded-xl transition duration-150 text-center text-xs flex items-center justify-center gap-2">
-                                <i class="fab fa-instagram text-base"></i> Instagram
-                            </a>
-                            <a href="https://awenity.github.io/intro" target="_blank" rel="noopener" class="bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 text-indigo-600 font-bold py-3 px-4 rounded-xl transition duration-150 text-center text-xs flex items-center justify-center gap-2">
-                                <i class="fas fa-globe text-base"></i> Explore
-                            </a>
-                        </div>
                     </div>
+
+                    <!-- TEMPLATE 2 -->
+                    <div class="glass-panel rounded-[24px] p-5 premium-shadow-heavy flex flex-col gap-3 border border-white">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 shadow-sm">
+                                    <i class="fas fa-hamburger text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-sm text-slate-900">Fast Food Menu Template</h3>
+                                    <p class="text-[11px] text-slate-400">High visual menu app showcase</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            A blazing fast digital restaurant catalog designed to look like a premium native menu app on mobile viewports. Perfect for eateries.
+                        </p>
+                        <a href="https://awenity.github.io/fast_food_menu_template/" target="_blank" class="w-full bg-slate-100 hover:bg-slate-200/70 text-slate-800 font-bold py-2.5 px-4 rounded-xl text-center text-xs transition flex items-center justify-center gap-2">
+                            <span>Launch Live Template</span>
+                            <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+
+                    <!-- TEMPLATE 3 -->
+                    <div class="glass-panel rounded-[24px] p-5 premium-shadow-heavy flex flex-col gap-3 border border-white">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm">
+                                    <i class="fas fa-mobile-screen-button text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-sm text-slate-900">Custom Showcase App</h3>
+                                    <p class="text-[11px] text-slate-400">High performance interactive layout</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Perfect for small service-based firms. Showcase app structures, map operational components, and bundle premium interactive widgets.
+                        </p>
+                        <a href="https://awenity.github.io/demo_app/" target="_blank" class="w-full bg-slate-100 hover:bg-slate-200/70 text-slate-800 font-bold py-2.5 px-4 rounded-xl text-center text-xs transition flex items-center justify-center gap-2">
+                            <span>Launch Live Template</span>
+                            <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+
+                    <!-- TEMPLATE 4 -->
+                    <div class="glass-panel rounded-[24px] p-5 premium-shadow-heavy flex flex-col gap-3 border border-white">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 shadow-sm">
+                                    <i class="fas fa-bag-shopping text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-sm text-slate-900">E-Commerce Template</h3>
+                                    <p class="text-[11px] text-slate-400">Lightweight shopping micro-space</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Elegant digital showcases highlighting specific products with custom responsive links and quick payment redirections.
+                        </p>
+                        <a href="https://awenity.github.io/e_commerce_template/" target="_blank" class="w-full bg-slate-100 hover:bg-slate-200/70 text-slate-800 font-bold py-2.5 px-4 rounded-xl text-center text-xs transition flex items-center justify-center gap-2">
+                            <span>Launch Live Template</span>
+                            <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+
+                    <!-- TEMPLATE 5 -->
+                    <div class="glass-panel rounded-[24px] p-5 premium-shadow-heavy flex flex-col gap-3 border border-white">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500 shadow-sm">
+                                    <i class="fas fa-circle-user text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-sm text-slate-900">Content Creator Single Page</h3>
+                                    <p class="text-[11px] text-slate-400">Condensed single-pane profile</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Keep it direct and precise. A singular premium viewport combining user biography details, premium imagery portfolios, and custom link lists.
+                        </p>
+                        <a href="https://awenity.github.io/content_creator_single_page_template/" target="_blank" class="w-full bg-slate-100 hover:bg-slate-200/70 text-slate-800 font-bold py-2.5 px-4 rounded-xl text-center text-xs transition flex items-center justify-center gap-2">
+                            <span>Launch Live Template</span>
+                            <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+
                 </div>
 
             </section>
 
-            <!-- TAB 3: NOTIFICATION ENGINE & ALERTS -->
-            <section id="panel-alerts" class="hidden w-full flex flex-col gap-6 py-2 transition-all duration-300">
+            <!-- TAB 3: CONTACT PORTAL (GET IN TOUCH) -->
+            <section id="panel-contact" class="hidden w-full flex flex-col gap-6 py-2 transition-all duration-300">
                 
-                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col items-center text-center gap-6">
-                    <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center shadow-inner text-slate-800">
-                        <i class="fas fa-bell text-3xl animate-bounce"></i>
+                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col items-center text-center gap-5">
+                    <div class="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center shadow-inner text-indigo-600">
+                        <i class="fas fa-paper-plane text-2xl"></i>
                     </div>
 
                     <div>
-                        <h3 class="text-xl font-extrabold text-slate-900">Notification Hub</h3>
-                        <p class="text-sm text-slate-500 mt-2 max-w-xs mx-auto">Verify your client environment capability. Dispatch native notifications to the hardware, or try an in-app fallback.</p>
+                        <h3 class="text-xl font-extrabold text-slate-900">Need a Digital Space?</h3>
+                        <p class="text-xs text-slate-500 mt-2 max-w-xs mx-auto">Get in touch to construct your customized high-performance application display. We turn your audience into an asset you own.</p>
                     </div>
 
                     <div class="w-full border-t border-slate-200/50 my-1"></div>
 
-                    <button onclick="dispatchAlertTest()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-6 rounded-xl transition duration-150 flex items-center justify-center gap-3 shadow-lg shadow-slate-900/10">
-                        <i class="fas fa-paper-plane"></i>
-                        <span>Dispatch Test Notification</span>
-                    </button>
+                    <!-- DIRECT ACTION BUTTONS -->
+                    <div class="w-full flex flex-col gap-3">
+                        <a href="https://wa.me/923001311047?text=Hi%20Awenity!%20I'm%20interested%20in%20building%20a%20Custom%20Digital%20Space..." target="_blank" rel="noopener" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl transition duration-150 text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/10 text-sm">
+                            <i class="fab fa-whatsapp text-lg"></i> Chat on WhatsApp
+                        </a>
+
+                        <a href="mailto:saqibzahid@official.com?subject=Inquiry%20Regarding%20Awenity%20Digital%20Space" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl transition duration-150 text-center flex items-center justify-center gap-2 shadow-lg text-sm">
+                            <i class="fas fa-envelope"></i> Email Us
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-[28px] p-6 premium-shadow-heavy flex flex-col gap-4">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Connect With Us</h4>
+                    
+                    <div class="grid grid-cols-1 gap-2.5">
+                        <!-- INSTAGRAM -->
+                        <a href="https://www.instagram.com/awenity_builds" target="_blank" rel="noopener" class="flex justify-between items-center bg-white/70 p-3.5 rounded-xl border border-slate-200/40 shadow-sm transition duration-150 active:bg-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800">@awenity_builds</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-xs text-slate-400"></i>
+                        </a>
+
+                        <!-- PERSONAL SPACE -->
+                        <a href="https://awenity.github.io/m.saqib_zahid/" target="_blank" rel="noopener" class="flex justify-between items-center bg-white/70 p-3.5 rounded-xl border border-slate-200/40 shadow-sm transition duration-150 active:bg-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800">Founder's Digital Space</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-xs text-slate-400"></i>
+                        </a>
+                    </div>
                 </div>
 
             </section>
@@ -291,28 +390,28 @@
 
         <!-- FLOATING BOTTOM NAVIGATION BAR CAPSULE -->
         <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md h-[84px] glass-panel rounded-full px-4 flex items-center justify-between premium-shadow-heavy z-50">
-            <!-- Tab 1: Calculator -->
-            <button onclick="switchTab('calculator', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
-                <div class="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm border border-rose-100/30">
-                    <i class="fas fa-calculator text-rose-500 text-lg"></i>
+            <!-- Tab 1: Home -->
+            <button onclick="switchTab('home', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
+                <div id="nav-btn-home" class="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm border border-rose-100/30">
+                    <i class="fas fa-house text-rose-500 text-lg"></i>
                 </div>
-                <span class="text-[9px] font-extrabold tracking-wider uppercase text-rose-600 transition duration-300">Calculator</span>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-rose-600 transition duration-300">Home</span>
             </button>
 
-            <!-- Tab 2: Partner -->
-            <button onclick="switchTab('partner', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
-                <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm border border-indigo-100/30">
-                    <i class="fas fa-handshake text-indigo-500 text-lg"></i>
+            <!-- Tab 2: Templates -->
+            <button onclick="switchTab('templates', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
+                <div id="nav-btn-templates" class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm border border-indigo-100/30">
+                    <i class="fas fa-layer-group text-indigo-500 text-lg"></i>
                 </div>
-                <span class="text-[9px] font-extrabold tracking-wider uppercase text-indigo-400 transition duration-300">Partner</span>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-indigo-400 transition duration-300">Templates</span>
             </button>
 
-            <!-- Tab 3: Alerts (High Contrast Floating Target) -->
-            <button onclick="switchTab('alerts', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
-                <div class="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm">
-                    <i class="fas fa-bell text-white text-lg"></i>
+            <!-- Tab 3: Contact (High Contrast Floating Target) -->
+            <button onclick="switchTab('contact', this)" class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full relative group">
+                <div id="nav-btn-contact" class="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center transition-all duration-300 transform group-active:scale-90 shadow-sm">
+                    <i class="fas fa-paper-plane text-white text-lg"></i>
                 </div>
-                <span class="text-[9px] font-extrabold tracking-wider uppercase text-slate-400 transition duration-300">Alerts</span>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase text-slate-400 transition duration-300">Contact</span>
             </button>
         </nav>
 
@@ -323,16 +422,14 @@
         <!-- Toast elements dynamically append here -->
     </div>
 
-
     <!-- CONTROL SCRIPTS SECTION -->
     <script>
         let deferredPrompt = null;
-        let activeTab = 'calculator';
+        let activeTab = 'home';
 
         window.onload = function() {
             checkInstallationRequirements();
             setupInstallListeners();
-            initHistoryList();
             setActiveNavVisual();
             registerServiceWorker();
         };
@@ -376,7 +473,7 @@
                     deferredPrompt = null;
                 }
                 
-                // Instantly transition to Success onboarding status screen to assist installation completion.
+                // Transition to Success onboarding status screen
                 document.getElementById('gateway-install-card').classList.add('opacity-0', 'scale-95');
                 setTimeout(() => {
                     document.getElementById('gateway-install-card').classList.add('hidden');
@@ -386,7 +483,7 @@
             });
 
             window.addEventListener('appinstalled', () => {
-                showToast("Application Installed successfully! Launching standard dashboard...");
+                showToast("Application Installed successfully! Launching showcase app...");
                 setTimeout(() => {
                     location.reload();
                 }, 1500);
@@ -408,14 +505,14 @@
             } else if (/Android/i.test(userAgent)) {
                 platformTitle.innerHTML = `<i class="fab fa-android text-emerald-600 text-sm"></i> Android Platform Suggestions`;
                 platformInstructions.innerHTML = `
-                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">1.</strong> Click the primary "Install Demo App" call-to-action button above.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">1.</strong> Click the primary "Install Awenity Space" button above.</p>
                     <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">2.</strong> Alternatively, tap the browser's menu (three dots) on the top right.</p>
-                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">3.</strong> Select <strong>"Install App"</strong> or "Add to Home screen" to establish standalone launchers.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">3.</strong> Select <strong>"Install App"</strong> or "Add to Home screen" to establish a direct standalone launcher.</p>
                 `;
             } else {
                 platformTitle.innerHTML = `<i class="fas fa-desktop text-slate-900 text-sm"></i> Desktop Standalone Instructions`;
                 platformInstructions.innerHTML = `
-                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">1.</strong> Click "Install Demo App" button above to pull current app launchers.</p>
+                    <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">1.</strong> Click "Install Awenity Space" button above to pull current app launchers.</p>
                     <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">2.</strong> Or locate the <strong>Install Icon</strong> (<i class="fas fa-arrow-down-to-line text-indigo-600"></i>) in the URL bar at the top-right.</p>
                     <p class="flex gap-2"><strong class="text-indigo-600 shrink-0">3.</strong> Approve the install dialog to deploy and access the application in premium viewport ratios.</p>
                 `;
@@ -426,14 +523,14 @@
             activeTab = tabId;
             
             // Hide all subview panels
-            document.getElementById('panel-calculator').classList.add('hidden');
-            document.getElementById('panel-partner').classList.add('hidden');
-            document.getElementById('panel-alerts').classList.add('hidden');
+            document.getElementById('panel-home').classList.add('hidden');
+            document.getElementById('panel-templates').classList.add('hidden');
+            document.getElementById('panel-contact').classList.add('hidden');
 
             // Show target panel
             document.getElementById(`panel-${tabId}`).classList.remove('hidden');
 
-            // Apply active styles to bottom nav items
+            // Reset navigation layouts
             const navTabs = document.querySelectorAll('.nav-tab');
             navTabs.forEach(tab => {
                 const label = tab.querySelector('span');
@@ -454,170 +551,6 @@
                     span.classList.add('text-slate-900', 'font-black', 'scale-105');
                 }
             });
-        }
-
-
-        let currentExpr = '';
-
-        function calcChar(char) {
-            currentExpr += char;
-            updateCalcDisplay(currentExpr || '0');
-        }
-
-        function calcClear() {
-            currentExpr = '';
-            document.getElementById('calc-exp').innerText = '';
-            updateCalcDisplay('0');
-        }
-
-        function updateCalcDisplay(val) {
-            document.getElementById('calc-display').innerText = val;
-        }
-
-        function calcCompute() {
-            if (!currentExpr) return;
-            try {
-                // Sanitize calculations for standard basic algebra evaluation
-                const sanitized = currentExpr.replace(/[^0-9+\-*/().]/g, '');
-                const result = Function(`"use strict"; return (${sanitized})`)();
-                
-                document.getElementById('calc-exp').innerText = currentExpr;
-                currentExpr = String(result);
-                updateCalcDisplay(currentExpr);
-            } catch (err) {
-                updateCalcDisplay('Error');
-                currentExpr = '';
-            }
-        }
-
-        function calcSave() {
-            const labelInput = document.getElementById('save-calc-label');
-            const label = labelInput.value.trim() || 'Calculated Value';
-            const display = document.getElementById('calc-display').innerText;
-            const exp = document.getElementById('calc-exp').innerText || display;
-
-            if (display === 'Error' || display === '0') {
-                showToast("Cannot archive an empty or invalid mathematical expression.");
-                return;
-            }
-
-            const computation = {
-                id: Date.now(),
-                label: label,
-                expression: exp,
-                result: display
-            };
-
-            let history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
-            history.unshift(computation);
-            localStorage.setItem('demo_calc_history', JSON.stringify(history));
-
-            labelInput.value = '';
-            initHistoryList();
-            showToast("Calculation archived successfully.");
-        }
-
-        function initHistoryList() {
-            const container = document.getElementById('calc-history-list');
-            const history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
-
-            if (history.length === 0) {
-                container.innerHTML = `<div class="text-center py-4 text-slate-400 text-xs italic">No computations archived yet.</div>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            history.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "flex justify-between items-center bg-white/70 p-3 rounded-xl border border-slate-200/40 shadow-sm transition duration-150 active:bg-slate-100 cursor-pointer";
-                card.setAttribute('onclick', `calcLoadItem(${item.id}, event)`);
-                card.innerHTML = `
-                    <div class="flex-1 min-w-0 pr-2 text-left">
-                        <p class="text-xs font-bold text-slate-900 truncate">${escapeHTML(item.label)}</p>
-                        <p class="text-[10px] text-slate-400 truncate font-mono">${escapeHTML(item.expression)}</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-black text-rose-600 font-mono">${escapeHTML(item.result)}</span>
-                        <button onclick="calcDeleteItem(${item.id}, event)" class="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center hover:bg-rose-100/50 transition">
-                            <i class="fas fa-trash-can text-rose-500 text-[10px]"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function calcLoadItem(id, event) {
-            if (event.target.closest('button')) return; // Avoid loading when clicking delete
-            const history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
-            const item = history.find(x => x.id === id);
-            if (item) {
-                currentExpr = item.result;
-                document.getElementById('calc-exp').innerText = item.expression;
-                updateCalcDisplay(item.result);
-                showToast(`Loaded "${item.label}" back to screen.`);
-            }
-        }
-
-        function calcDeleteItem(id, event) {
-            event.stopPropagation();
-            let history = JSON.parse(localStorage.getItem('demo_calc_history')) || [];
-            history = history.filter(x => x.id !== id);
-            localStorage.setItem('demo_calc_history', JSON.stringify(history));
-            initHistoryList();
-            showToast("Calculation removed.");
-        }
-
-        function calcClearHistory() {
-            localStorage.removeItem('demo_calc_history');
-            initHistoryList();
-            showToast("History list cleared.");
-        }
-
-
-        function dispatchAlertTest() {
-            if (!("Notification" in window)) {
-                showToast("System notifications are not supported on this device/browser. Fallback alert triggered! 🚀");
-                return;
-            }
-
-            if (Notification.permission === "granted") {
-                triggerSystemNotification();
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        triggerSystemNotification();
-                    } else {
-                        showToast("Push permission denied. In-app fallback metrics are fully operational! 🚀");
-                    }
-                });
-            } else {
-                showToast("Notification permission blocked. In-app fallback metrics are fully operational! 🚀");
-            }
-        }
-
-        function triggerSystemNotification() {
-            const title = "Demo App Notification";
-            const options = {
-                body: "This is your customized push alert. The system operates at peak benchmark metrics! 🚀",
-                icon: "icon.svg",
-                badge: "icon.svg"
-            };
-
-            // Attempt ServiceWorker registration notification push -- Required for modern iOS Standalone PWA push notifications
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.ready.then(reg => {
-                    reg.showNotification(title, options)
-                    .catch(err => {
-                        console.warn("SW showNotification failed, triggering standard Window push: ", err);
-                        new Notification(title, options);
-                    });
-                }).catch(err => {
-                    new Notification(title, options);
-                });
-            } else {
-                new Notification(title, options);
-            }
         }
 
         function showToast(message) {
