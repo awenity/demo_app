@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo App</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0c10;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        /* Custom smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f111a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2d42;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5175;
+        }
+        /* Glow effects */
+        .glow-purple {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
+        }
+        .glow-green {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+<script>
+    // Create custom SVG Logo for PWA
+    const svgLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
+        <defs>
+            <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8b5cf6" />
+                <stop offset="100%" stop-color="#ec4899" />
+            </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="24" fill="#0d0e12"/>
+        <path d="M30 25h25c15 0 25 8 25 25s-10 25-25 25H30V25zm14 10v30h11c8 0 11-4 11-15s-3-15-11-15H44z" fill="url(#glow)"/>
+        <circle cx="50" cy="50" r="3" fill="#ffffff" opacity="0.8"/>
+    </svg>`;
+
+    // Dynamically inject the PWA Web App Manifest using base64 encoding
+    const manifest = {
+        "name": "Demo App",
+        "short_name": "Demo App",
+        "start_url": ".",
+        "display": "standalone",
+        "background_color": "#0b0c10",
+        "theme_color": "#8b5cf6",
+        "icons": [
+            {
+                "src": "data:image/svg+xml;base64," + btoa(svgLogo),
+                "sizes": "512x512",
+                "type": "image/svg+xml",
+                "purpose": "any maskable"
+            }
+        ]
+    };
+
+    const manifestStr = JSON.stringify(manifest);
+    const blob = new Blob([manifestStr], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blob);
+    
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
+</script>
+
+<!-- This floating bar helps the user test the install flow and main app inside standard browser frames -->
+<div class="bg-gray-900 border-b border-gray-800 text-xs px-4 py-2 flex flex-wrap justify-between items-center gap-2 z-50">
+    <div class="flex items-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 bg-purple-500 rounded-full animate-ping"></span>
+        <span class="font-semibold text-gray-300">PWA Viewport Simulator</span>
+    </div>
+    <div class="flex items-center gap-1.5 bg-black/40 p-1 rounded-lg border border-gray-700/60">
+        <button id="toggle-install-view" onclick="setAppView('install')" class="px-3 py-1 rounded-md bg-purple-600 text-white font-medium transition-all duration-200">
+            Install Screen
+        </button>
+        <button id="toggle-success-view" onclick="setAppView('success')" class="px-3 py-1 rounded-md text-gray-400 hover:text-white transition-all duration-200">
+            Onboarding Info
+        </button>
+        <button id="toggle-app-view" onclick="setAppView('app')" class="px-3 py-1 rounded-md text-gray-400 hover:text-white transition-all duration-200">
+            Standalone App Interface
+        </button>
+    </div>
+</div>
+
+<!-- Main App Container -->
+<main class="flex-grow flex flex-col justify-center items-center w-full max-w-7xl mx-auto px-4 py-6">
+
+    <!-- Screen 1: The mandatory landing page showing ONLY the custom Install flow (strictly no "continue on browser" bypass) -->
+    <section id="screen-install" class="w-full max-w-md bg-gradient-to-b from-gray-900 to-black p-8 rounded-3xl border border-gray-800 shadow-2xl flex flex-col items-center text-center py-12 glow-purple relative overflow-hidden transition-all duration-300 transform scale-100">
+        <!-- Abstract glowing backdrop -->
+        <div class="absolute -top-16 -left-16 w-36 h-36 bg-purple-600/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-16 -right-16 w-36 h-36 bg-pink-600/10 rounded-full blur-3xl"></div>
+
+        <!-- SVG Glowing Logo -->
+        <div class="w-24 h-24 mb-6 relative animate-bounce duration-[3000ms]">
+            <div class="absolute inset-0 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-2xl blur-lg opacity-40 animate-pulse"></div>
+            <div class="relative bg-gray-950 p-4 rounded-3xl border border-purple-500/30 flex items-center justify-center">
+                <svg class="w-16 h-16" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 25h25c15 0 25 8 25 25s-10 25-25 25H30V25zm14 10v30h11c8 0 11-4 11-15s-3-15-11-15H44z" fill="url(#glowGradient)"/>
+                    <defs>
+                        <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#a78bfa" />
+                            <stop offset="100%" stop-color="#f472b6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-white tracking-tight mb-2">
+            Demo App
+        </h1>
+        <p class="text-gray-400 text-sm mb-8 px-4 leading-relaxed">
+            Experience our premium utilities directly from your device's home screen. Fast, secure, and offline capable.
+        </p>
+
+        <!-- Pure Premium Install Button -->
+        <button id="pwa-install-btn" onclick="handleInstallAction()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform active:scale-95 shadow-lg shadow-purple-500/20 flex items-center justify-center gap-3 group relative overflow-hidden">
+            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></span>
+            <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
+            <span>Install Demo App</span>
+        </button>
+
+        <div class="mt-8 flex items-center gap-2 text-xs text-purple-400 font-medium">
+            <i class="fa-solid fa-shield-halved"></i> Verified Safe PWA Source
+        </div>
+    </section>
+
+    <!-- Screen 2: Prompted right after user clicks "Install". Tells them to inspect their desktop/app drawer. -->
+    <section id="screen-success" class="hidden w-full max-w-md bg-gradient-to-b from-gray-900 to-black p-8 rounded-3xl border border-gray-800 shadow-2xl flex flex-col items-center text-center py-12 glow-purple relative overflow-hidden transition-all duration-300 transform scale-100">
+        <div class="absolute -top-16 -left-16 w-36 h-36 bg-green-500/10 rounded-full blur-3xl"></div>
+        
+        <!-- Large success checkmark animate -->
+        <div class="w-20 h-20 bg-green-500/10 border border-green-500/30 rounded-full flex items-center justify-center mb-6 animate-pulse">
+            <i class="fa-solid fa-circle-check text-4xl text-green-400"></i>
+        </div>
+
+        <h2 class="text-2xl font-bold text-white mb-3">Check your Home Screen!</h2>
+        <p class="text-gray-300 text-sm mb-6 leading-relaxed px-2">
+            The application is configuring on your device and will install in a few seconds. Look for the <span class="text-purple-400 font-semibold">Demo App</span> icon on your launcher!
+        </p>
+
+        <!-- Loading spinner simulation -->
+        <div class="flex items-center gap-3 bg-gray-950/80 px-5 py-3 rounded-xl border border-gray-800/80 mb-6 w-full justify-center">
+            <div class="w-4.5 h-4.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+            <span class="text-xs text-gray-400 font-medium">Waiting for system confirmation...</span>
+        </div>
+
+        <!-- Universal helper instructions depending on platform -->
+        <div class="text-left w-full bg-gray-950/60 p-4 rounded-xl border border-gray-900 space-y-2.5">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Alternative Steps:</p>
+            <div class="flex items-start gap-2.5 text-xs text-gray-400">
+                <span class="bg-gray-800 text-white rounded-full w-4.5 h-4.5 flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">iOS</span>
+                <p>Tap <i class="fa-solid fa-arrow-up-from-bracket mx-0.5 text-purple-400"></i> (Share) then choose <strong>"Add to Home Screen"</strong>.</p>
+            </div>
+            <div class="flex items-start gap-2.5 text-xs text-gray-400">
+                <span class="bg-gray-800 text-white rounded-full w-4.5 h-4.5 flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">PC</span>
+                <p>Look for the app installation icon in your browser's address bar.</p>
+            </div>
+        </div>
+
+        <!-- Quick Access simulator button for the previewer -->
+        <button onclick="setAppView('app')" class="mt-8 text-xs font-semibold text-purple-400 hover:text-purple-300 flex items-center gap-1.5 transition-all">
+            Open Standalone App View <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </section>
+
+    <!-- Screen 3: The actual functional standalone PWA experience -->
+    <section id="screen-actual-app" class="hidden w-full max-w-6xl flex flex-col gap-6 animate-[fadeIn_0.4s_ease-out]">
+        
+        <!-- App Top Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900/50 p-6 rounded-3xl border border-gray-800/80 backdrop-blur-md">
+            <div class="flex items-center gap-4">
+                <div class="bg-gradient-to-tr from-purple-600 to-pink-500 p-2.5 rounded-2xl shadow-lg shadow-purple-500/20">
+                    <svg class="w-8 h-8" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M30 25h25c15 0 25 8 25 25s-10 25-25 25H30V25zm14 10v30h11c8 0 11-4 11-15s-3-15-11-15H44z" fill="#ffffff"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-bold tracking-tight text-white">Demo App</h1>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Active
+                        </span>
+                    </div>
+                    <p class="text-xs text-gray-400">Created & Powered by <span class="text-purple-400 font-semibold">Awenity Builds</span></p>
+                </div>
+            </div>
+            <!-- Quick Date Widget -->
+            <div class="flex items-center gap-3 text-sm text-gray-300 bg-gray-950/40 px-4 py-2 rounded-xl border border-gray-800/60 self-start md:self-auto">
+                <i class="fa-solid fa-calendar-day text-purple-400"></i>
+                <span id="current-date-span">July 11, 2026</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Left & Center Side Column: Utilities (Notifications, Contact CTA) -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+
+                <!-- Card 1: Test Notification Panel -->
+                <div class="bg-gray-900/40 p-6 rounded-3xl border border-gray-800/60 flex flex-col justify-between h-fit relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-purple-500/10 text-purple-400 p-3 rounded-2xl border border-purple-500/20">
+                                    <i class="fa-solid fa-bell text-xl animate-[swing_2s_ease-in-out_infinite]"></i>
+                                </span>
+                                <div>
+                                    <h3 class="text-lg font-bold text-white">System Alert Controller</h3>
+                                    <p class="text-xs text-gray-400">Send dynamic local system notifications</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-6 leading-relaxed">
+                            Clicking the button triggers a device-level system push alert. If system permissions are blocked, a customized floating interactive notification panel will launch immediately inside the app space instead.
+                        </p>
+                    </div>
+
+                    <button onclick="triggerAppNotification()" class="w-full bg-gray-800 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300 flex items-center justify-center gap-2 group transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-black/30">
+                        <i class="fa-regular fa-bell-ring"></i>
+                        <span>Test Notification</span>
+                        <i class="fa-solid fa-chevron-right text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2: Get One For Yourself Contact Block -->
+                <div class="bg-gradient-to-tr from-gray-900 via-gray-900 to-purple-950/40 p-6 rounded-3xl border border-gray-800/60 relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-500/5 rounded-full blur-2xl"></div>
+                    <div>
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <span class="bg-pink-500/10 text-pink-400 text-[10px] font-bold px-3 py-1 rounded-full border border-pink-500/20 uppercase tracking-widest">
+                                    Get One For Yourself
+                                </span>
+                                <h3 class="text-xl font-bold text-white mt-3">Professional PWAs & Websites</h3>
+                            </div>
+                            <div class="bg-purple-600/10 p-2.5 rounded-xl border border-purple-500/20">
+                                <i class="fa-solid fa-laptop-code text-xl text-purple-400"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-6 leading-relaxed">
+                            Looking for a dynamic app similar to this one? Elevate your brand presence with optimized, responsive platforms designed perfectly for any device.
+                        </p>
+                    </div>
+
+                    <!-- Direct Contact & Social Dynamic Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- WhatsApp button -->
+                        <a href="https://wa.me/923001311047?text=Hi!%20I%20saw%20your%20Demo%20App%20and%20would%20like%20to%20discuss%20building%20an%20application." target="_blank" class="bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 hover:border-transparent py-3 px-4 rounded-xl font-semibold text-center text-xs transition-all duration-300 flex items-center justify-center gap-2 group shadow-md">
+                            <i class="fa-brands fa-whatsapp text-base"></i>
+                            <span>Talk Now</span>
+                        </a>
+                        <!-- Instagram button -->
+                        <a href="https://www.instagram.com/awenity_builds" target="_blank" class="bg-pink-600/10 hover:bg-pink-600 text-pink-400 hover:text-white border border-pink-500/20 hover:border-transparent py-3 px-4 rounded-xl font-semibold text-center text-xs transition-all duration-300 flex items-center justify-center gap-2 group shadow-md">
+                            <i class="fa-brands fa-instagram text-base"></i>
+                            <span>Instagram</span>
+                        </a>
+                        <!-- Portfolio website button -->
+                        <a href="https://awenity.github.io/intro" target="_blank" class="bg-purple-600/10 hover:bg-purple-600 text-purple-400 hover:text-white border border-purple-500/20 hover:border-transparent py-3 px-4 rounded-xl font-semibold text-center text-xs transition-all duration-300 flex items-center justify-center gap-2 group shadow-md">
+                            <i class="fa-solid fa-compass text-base"></i>
+                            <span>Explore</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Interactive App Utilities (Smart Calculator with named storage) -->
+            <div class="lg:col-span-5">
+                <div class="bg-gray-900/40 p-6 rounded-3xl border border-gray-800/60 flex flex-col justify-between h-full relative overflow-hidden">
+                    <div class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl"></div>
+                    
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-purple-500/10 text-purple-400 p-2.5 rounded-xl border border-purple-500/20">
+                                <i class="fa-solid fa-calculator text-lg"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-base font-bold text-white">Smart Calculator</h3>
+                                <p class="text-xs text-gray-400">Perform and save calculations locally</p>
+                            </div>
+                        </div>
+
+                        <!-- Calculator Board Structure -->
+                        <div class="bg-gray-950 p-4 rounded-2xl border border-gray-800/80 mb-4">
+                            <!-- Display -->
+                            <div class="text-right mb-3 px-2">
+                                <div id="calc-expr" class="text-xs text-gray-500 h-4 overflow-hidden tracking-wider font-mono"></div>
+                                <div id="calc-display" class="text-2xl font-bold text-white h-8 overflow-hidden font-mono tracking-tight mt-1">0</div>
+                            </div>
+
+                            <!-- Buttons grid -->
+                            <div class="grid grid-cols-4 gap-2 mb-3">
+                                <button onclick="clearCalc()" class="bg-gray-900 hover:bg-gray-850 text-purple-400 font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">C</button>
+                                <button onclick="inputCalc('(')" class="bg-gray-900 hover:bg-gray-850 text-purple-400 font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">(</button>
+                                <button onclick="inputCalc(')')" class="bg-gray-900 hover:bg-gray-850 text-purple-400 font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">)</button>
+                                <button onclick="inputCalc('/')" class="bg-gray-900 hover:bg-purple-950 text-purple-400 font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">/</button>
+
+                                <button onclick="inputCalc('7')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">7</button>
+                                <button onclick="inputCalc('8')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">8</button>
+                                <button onclick="inputCalc('9')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">9</button>
+                                <button onclick="inputCalc('*')" class="bg-gray-900 hover:bg-purple-950 text-purple-400 font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">×</button>
+
+                                <button onclick="inputCalc('4')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">4</button>
+                                <button onclick="inputCalc('5')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">5</button>
+                                <button onclick="inputCalc('6')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">6</button>
+                                <button onclick="inputCalc('-')" class="bg-gray-900 hover:bg-purple-950 text-purple-400 font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">-</button>
+
+                                <button onclick="inputCalc('1')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">1</button>
+                                <button onclick="inputCalc('2')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">2</button>
+                                <button onclick="inputCalc('3')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">3</button>
+                                <button onclick="inputCalc('+')" class="bg-gray-900 hover:bg-purple-950 text-purple-400 font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">+</button>
+
+                                <button onclick="inputCalc('0')" class="col-span-2 bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">0</button>
+                                <button onclick="inputCalc('.')" class="bg-gray-900/60 hover:bg-gray-800 text-gray-200 font-semibold p-3 rounded-xl transition-all active:scale-95 text-sm">.</button>
+                                <button onclick="evalCalc()" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold p-3 rounded-xl transition-all active:scale-95 text-sm">=</button>
+                            </div>
+
+                            <!-- Save current output module -->
+                            <div class="flex gap-2 pt-2 border-t border-gray-900">
+                                <input type="text" id="calc-save-name" placeholder="Name (e.g. Total)" class="bg-gray-900 text-white placeholder-gray-500 px-3 py-2.5 rounded-xl text-xs w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium">
+                                <button onclick="saveCalculation()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200">
+                                    <i class="fa-solid fa-bookmark mr-1"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Saved Calculations Panel -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2 px-1">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Saved Calculations</span>
+                            <button onclick="clearSavedCalcs()" class="text-[11px] text-red-400 hover:text-red-300 font-medium transition-all">Clear All</button>
+                        </div>
+                        <div id="saved-calcs-container" class="max-h-32 overflow-y-auto space-y-2 pr-1">
+                            <!-- Dynamically loaded elements will appear here -->
+                            <p class="text-xs text-gray-500 italic text-center py-4">No saved items yet.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<!-- Absolute Dynamic Notification Toast Layer -->
+<div id="toast-layer" class="fixed bottom-6 right-6 flex flex-col gap-3 z-[100] pointer-events-none max-w-sm w-full px-4"></div>
+
+<!-- App Footer -->
+<footer class="w-full text-center py-6 text-gray-600 text-xs border-t border-gray-900 bg-black/30 mt-12">
+    <p>© 2026 Demo App. Handcrafted with precision by <a href="https://awenity.github.io/intro" target="_blank" class="text-purple-500 hover:underline">Awenity Builds</a>.</p>
+</footer>
+
+<script>
+    // System Variables
+    let currentCalculation = '0';
+    let rawExpression = '';
+    let savedCalculations = JSON.parse(localStorage.getItem('savedCalculations') || '[]');
+    let deferredPrompt = null;
+
+    // Run on startup
+    window.onload = function() {
+        // Render system date
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date-span').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+
+        // Load calculation memory
+        renderSavedCalculations();
+
+        // Listen for PWA installation prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            console.log("PWA beforeinstallprompt intercepted successfully.");
+        });
+
+        // Set default screen based on app status (simulate standard flow)
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            setAppView('app');
+        } else {
+            // By default, open browser sessions into the installation gateway
+            setAppView('install');
+        }
+    };
+
+    // View State Manager (Controls navigation simulator)
+    function setAppView(viewName) {
+        // Hide all screens
+        document.getElementById('screen-install').classList.add('hidden');
+        document.getElementById('screen-success').classList.add('hidden');
+        document.getElementById('screen-actual-app').classList.add('hidden');
+
+        // Reset toggle tab styling
+        const tabs = {
+            'install': 'toggle-install-view',
+            'success': 'toggle-success-view',
+            'app': 'toggle-app-view'
+        };
+        Object.keys(tabs).forEach(k => {
+            const el = document.getElementById(tabs[k]);
+            el.className = "px-3 py-1 rounded-md text-gray-400 hover:text-white transition-all duration-200";
+        });
+
+        // Set selected elements active
+        if (viewName === 'install') {
+            document.getElementById('screen-install').classList.remove('hidden');
+            document.getElementById('toggle-install-view').className = "px-3 py-1 rounded-md bg-purple-600 text-white font-medium shadow-md shadow-purple-500/10";
+        } else if (viewName === 'success') {
+            document.getElementById('screen-success').classList.remove('hidden');
+            document.getElementById('toggle-success-view').className = "px-3 py-1 rounded-md bg-purple-600 text-white font-medium shadow-md shadow-purple-500/10";
+        } else if (viewName === 'app') {
+            document.getElementById('screen-actual-app').classList.remove('hidden');
+            document.getElementById('toggle-app-view').className = "px-3 py-1 rounded-md bg-purple-600 text-white font-medium shadow-md shadow-purple-500/10";
+        }
+    }
+
+    // Action when user clicks "Install"
+    function handleInstallAction() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                } else {
+                    console.log('User dismissed the install prompt');
+                }
+                deferredPrompt = null;
+            });
+        }
+        
+        // Transition instantly to Success instructions as requested
+        setAppView('success');
+        
+        // Push floating simulation toast alert
+        showToast("Triggering installation sequence on your OS...", "info");
+    }
+
+    // System Notification Trigger
+    function triggerAppNotification() {
+        if (!("Notification" in window)) {
+            // Fallback immediately if web notifications not supported
+            triggerVirtualNotification("System notification initialized!", "This is an in-app simulation. Web Notifications API is unsupported by your browser.");
+            return;
+        }
+
+        if (Notification.permission === "granted") {
+            sendRealNotification();
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    sendRealNotification();
+                } else {
+                    triggerVirtualNotification("Permission Denied", "System notification blocked. Falling back to in-app notification simulation!");
+                }
+            });
+        } else {
+            // Already denied
+            triggerVirtualNotification("Permission Denied", "System notifications are blocked in browser preferences. Please enable them.");
+        }
+    }
+
+    // Execute Native notification
+    function sendRealNotification() {
+        try {
+            const logoURL = "data:image/svg+xml;base64," + btoa(svgLogo);
+            new Notification("Demo App System", {
+                body: "Hello! This is your requested test notification. System is operating at peak performance! 🚀",
+                icon: logoURL
+            });
+            showToast("System notification dispatched successfully!", "success");
+        } catch (e) {
+            triggerVirtualNotification("Notification Dispatched", "System is operating at peak performance! 🚀");
+        }
+    }
+
+    // Virtual in-app notification prompt (Floating responsive component fallback)
+    function triggerVirtualNotification(title, text) {
+        const toastLayer = document.getElementById('toast-layer');
+        const container = document.createElement('div');
+        container.className = "pointer-events-auto bg-gray-950/95 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex items-start gap-3.5 transform transition-all duration-300 translate-y-4 opacity-0 glow-purple";
+        
+        container.innerHTML = `
+            <div class="bg-gradient-to-tr from-purple-500 to-pink-500 p-2.5 rounded-xl text-white flex-shrink-0">
+                <i class="fa-solid fa-bell-on text-base animate-pulse"></i>
+            </div>
+            <div class="flex-grow">
+                <h4 class="text-sm font-bold text-white">${title}</h4>
+                <p class="text-xs text-gray-300 mt-1 leading-relaxed">${text}</p>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        `;
+
+        toastLayer.appendChild(container);
+        setTimeout(() => {
+            container.classList.remove('translate-y-4', 'opacity-0');
+        }, 10);
+
+        setTimeout(() => {
+            if (container.parentElement) {
+                container.classList.add('opacity-0', 'translate-y-[-10px]');
+                setTimeout(() => container.remove(), 300);
+            }
+        }, 6500);
+    }
+
+    // Generic Toast Alerts (Top feedback messages)
+    function showToast(message, type = "success") {
+        const toastLayer = document.getElementById('toast-layer');
+        const container = document.createElement('div');
+        container.className = "pointer-events-auto px-4 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transform transition-all duration-300 translate-y-4 opacity-0 border " + 
+            (type === 'success' ? 'bg-emerald-950/95 border-emerald-500/20 text-emerald-400' : 'bg-gray-950/95 border-purple-500/20 text-purple-400');
+        
+        const icon = type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-info"></i>';
+        container.innerHTML = `${icon} <span>${message}</span>`;
+        toastLayer.appendChild(container);
+
+        setTimeout(() => {
+            container.classList.remove('translate-y-4', 'opacity-0');
+        }, 10);
+
+        setTimeout(() => {
+            if (container.parentElement) {
+                container.classList.add('opacity-0');
+                setTimeout(() => container.remove(), 300);
+            }
+        }, 3500);
+    }
+
+    // Calculator Methods
+    const calcDisplay = document.getElementById('calc-display');
+    const calcExpr = document.getElementById('calc-expr');
+
+    function inputCalc(char) {
+        if (currentCalculation === '0' && !isNaN(char)) {
+            currentCalculation = char;
+        } else {
+            currentCalculation += char;
+        }
+        updateCalcDisplay();
+    }
+
+    function clearCalc() {
+        currentCalculation = '0';
+        rawExpression = '';
+        calcExpr.textContent = '';
+        updateCalcDisplay();
+    }
+
+    function updateCalcDisplay() {
+        calcDisplay.textContent = currentCalculation;
+    }
+
+    function evalCalc() {
+        try {
+            // Basic sanitation before evaluate
+            let sanitized = currentCalculation.replace(/×/g, '*');
+            let result = eval(sanitized);
+            
+            // Format result
+            if (result === undefined || isNaN(result)) {
+                throw new Error("Invalid Format");
+            }
+            if (result % 1 !== 0) {
+                result = parseFloat(result.toFixed(6));
+            }
+            
+            calcExpr.textContent = currentCalculation + ' =';
+            currentCalculation = result.toString();
+            updateCalcDisplay();
+        } catch (e) {
+            calcDisplay.textContent = 'Error';
+            setTimeout(() => {
+                currentCalculation = '0';
+                updateCalcDisplay();
+            }, 1500);
+        }
+    }
+
+    // Save named calculation inside LocalStorage
+    function saveCalculation() {
+        const nameField = document.getElementById('calc-save-name');
+        const calcName = nameField.value.trim();
+        const value = calcDisplay.textContent;
+
+        if (!calcName) {
+            showToast("Please enter a name for the calculation.", "info");
+            return;
+        }
+
+        if (value === 'Error' || value === '0') {
+            showToast("Cannot save empty or erroneous result.", "info");
+            return;
+        }
+
+        const calculationObject = {
+            id: Date.now(),
+            name: calcName,
+            expression: calcExpr.textContent || '',
+            value: value
+        };
+
+        savedCalculations.unshift(calculationObject);
+        localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+        
+        nameField.value = '';
+        renderSavedCalculations();
+        showToast("Calculation saved locally!", "success");
+    }
+
+    // Render Calculation Elements
+    function renderSavedCalculations() {
+        const container = document.getElementById('saved-calcs-container');
+        if (savedCalculations.length === 0) {
+            container.innerHTML = `<p class="text-xs text-gray-500 italic text-center py-6">No saved calculations yet.</p>`;
+            return;
+        }
+
+        container.innerHTML = savedCalculations.map(calc => `
+            <div class="bg-gray-950/60 p-3 rounded-xl border border-gray-900 flex items-center justify-between gap-3 group transition-all duration-250 hover:border-purple-500/20">
+                <div class="overflow-hidden cursor-pointer flex-grow" onclick="loadCalculation('${calc.value}')">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-xs font-bold text-white truncate max-w-[120px]">${calc.name}</span>
+                        <span class="text-[10px] text-gray-500 truncate font-mono">${calc.expression}</span>
+                    </div>
+                    <div class="text-sm font-semibold font-mono text-purple-400 mt-0.5">${calc.value}</div>
+                </div>
+                <button onclick="deleteCalculation(${calc.id})" class="text-gray-600 hover:text-red-400 p-1 transition-all">
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    // Load saved calculation value back to active displays
+    function loadCalculation(val) {
+        currentCalculation = val;
+        calcExpr.textContent = '';
+        updateCalcDisplay();
+        showToast("Saved value loaded into display.", "success");
+    }
+
+    // Delete single item
+    function deleteCalculation(id) {
+        savedCalculations = savedCalculations.filter(item => item.id !== id);
+        localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+        renderSavedCalculations();
+        showToast("Item deleted", "info");
+    }
+
+    // Delete all saved database
+    function clearSavedCalcs() {
+        savedCalculations = [];
+        localStorage.removeItem('savedCalculations');
+        renderSavedCalculations();
+        showToast("Storage cleared!", "info");
+    }
+</script>
+
+</body>
+</html>
