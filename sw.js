@@ -1,4 +1,4 @@
-const CACHE_NAME = 'demo-app-v4';
+const CACHE_NAME = 'demo-app-v1.0';
 const ASSETS = [
   './index.html',
   './manifest.json',
